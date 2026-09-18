@@ -128,6 +128,29 @@ public class TestRunAggregatorTests
         Assert.AreEqual(11, overview.Total.Total);
     }
 
+    [TestMethod]
+    public void TestRunOverview_CorrectlyExecutedAcrossAllAssemblySummaries()
+    {
+        var runA = ParseSample("lauf-a.trx"); // 7 test cases
+        var runC = ParseSample("lauf-c.trx"); // 4 test cases
+
+        var overview = TestRunAggregator.Aggregate([runA, runC]);
+
+        Assert.AreEqual(8, overview.Total.CorrectlyExecuted); //7 from runA, 1 from runC
+
+    }
+
+    [TestMethod]
+    public void TestRunOverview_Total_LoadErrorAggregatesAcrossAssemblies()
+    {
+        var runC = ParseSample("lauf-c.trx"); // dienstlib.testcpp.dll: 3 load errors
+
+        var overview = TestRunAggregator.Aggregate([runC]);
+
+        Assert.AreEqual(3, overview.Total.LoadError,
+            "The overview-level total must surface load errors, not just the per-assembly summary.");
+    }
+
     private static TrxReadResult ParseSample(string fileName) =>
         TrxDocumentParser.Parse(File.ReadAllText(SampleData.PathTo(fileName)));
 }
