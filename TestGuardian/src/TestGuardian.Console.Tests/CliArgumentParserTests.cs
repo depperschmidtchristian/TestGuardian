@@ -46,6 +46,14 @@ public class CliArgumentParserTests
     }
 
     [TestMethod]
+    public void Parse_UnknownOption_ThrowsInsteadOfBecomingAPositionalInput()
+    {
+        // A typo'd switch (e.g. "--min-tets") must not silently turn into a bogus file input that
+        // then fails as an "unresolved input" — that hides a usage error behind a misleading verdict.
+        Assert.ThrowsException<ArgumentException>(() => CliArgumentParser.Parse(["a.trx", "--min-tets", "3"]));
+    }
+
+    [TestMethod]
     public void Parse_MixedInputsAndOptions_SeparatesCorrectly()
     {
         var options = CliArgumentParser.Parse(["a.trx", "--max-depth", "2", "b.trx"]);

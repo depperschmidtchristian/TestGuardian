@@ -34,6 +34,10 @@ public static class CliArgumentParser
                     break;
                 case "--min-tests":
                     throw new ArgumentException("--min-tests erwartet eine ganze Zahl als Wert.");
+                case var unknownOption when unknownOption.StartsWith("--", StringComparison.Ordinal):
+                    throw new ArgumentException(
+                        $"Unbekannte Option '{unknownOption}'. Ein Tippfehler in einem Schalter darf nicht " +
+                        "stillschweigend als zu prüfende Datei behandelt werden.");
                 default:
                     inputs.Add(args[i]);
                     break;

@@ -3,7 +3,18 @@ using TestGuardian.Core.Input;
 using TestGuardian.Core.Trx;
 using TestGuardian.Console;
 
-var options = CliArgumentParser.Parse(args);
+CliOptions options;
+try
+{
+    options = CliArgumentParser.Parse(args);
+}
+catch (ArgumentException ex)
+{
+    // A malformed command line is an invocation error, not a red test verdict — it must not be
+    // reported through the same "URTEIL: ROT" path a real (or unresolved) test run would use.
+    Console.Error.WriteLine($"Fehlerhafter Aufruf: {ex.Message}");
+    return 1;
+}
 
 var inputResolution = TrxInputResolver.Resolve(options.Inputs, options.MaxDepth);
 
