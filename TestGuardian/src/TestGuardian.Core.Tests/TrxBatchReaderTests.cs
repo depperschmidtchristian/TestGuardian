@@ -2,6 +2,8 @@ using TestGuardian.Core.Trx;
 
 namespace TestGuardian.Core.Tests;
 
+// SynchronousProgress<T> lives in TestGuardian.Core (shared with Program.cs) — see its doc comment.
+
 [TestClass]
 public class TrxBatchReaderTests
 {
@@ -56,15 +58,5 @@ public class TrxBatchReaderTests
 
         Assert.AreEqual(0, results.Count);
         Assert.AreEqual(0, reports.Count);
-    }
-
-    /// <summary>
-    /// System.Progress&lt;T&gt; marshals Report calls through a captured SynchronizationContext
-    /// (or the thread pool when none exists), i.e. asynchronously — unsuitable for assertions
-    /// immediately after ReadAll returns. This reports synchronously on the calling thread instead.
-    /// </summary>
-    private sealed class SynchronousProgress<T>(Action<T> callback) : IProgress<T>
-    {
-        public void Report(T value) => callback(value);
     }
 }

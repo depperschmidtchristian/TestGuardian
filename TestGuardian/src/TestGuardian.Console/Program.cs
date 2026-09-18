@@ -1,17 +1,20 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-
 using TestGuardian.Core;
+using TestGuardian.Core.Input;
+using TestGuardian.Core.Trx;
+using TestGuardian.Console;
 
-void Main()
-{
-    ITestGuardianCore testGuardianCore = new TestGuardianCore();
+var options = CliArgumentParser.Parse(args);
 
-    while (true)
-    {
-        testGuardianCore.PrintTest("Hello");
-    }
-}
+var inputResolution = TrxInputResolver.Resolve(options.Inputs, options.MaxDepth);
 
-Main();
+var progress = new SynchronousProgress<ReadProgress>(p =>
+    Console.Write($"\rDatei {p.FilesRead}/{p.TotalFiles} gelesen ({p.TestsReadSoFar} Tests bisher)..."));
+var readResults = TrxBatchReader.ReadAll(inputResolution.ResolvedFilePaths, progress);
+Console.WriteLine();
 
+var overview = TestRunAggregator.Aggregate(readResults);
+var verdict = TestRunVerdict.Evaluate(overview, inputResolution, options.MinTests);
+
+ConsoleReportPrinter.Print(overview, inputResolution, verdict);
+
+return verdict.IsSuccessful ? 0 : 1;
