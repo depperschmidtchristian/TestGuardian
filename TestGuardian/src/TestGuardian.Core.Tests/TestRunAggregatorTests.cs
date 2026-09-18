@@ -143,9 +143,10 @@ public class TestRunAggregatorTests
     [TestMethod]
     public void TestRunOverview_Total_LoadErrorAggregatesAcrossAssemblies()
     {
+        var runA = ParseSample("lauf-a.trx"); // 7 test cases, no errors.
         var runC = ParseSample("lauf-c.trx"); // dienstlib.testcpp.dll: 3 load errors
 
-        var overview = TestRunAggregator.Aggregate([runC]);
+        var overview = TestRunAggregator.Aggregate([runA, runC]);
 
         Assert.AreEqual(3, overview.Total.LoadError,
             "The overview-level total must surface load errors, not just the per-assembly summary.");
