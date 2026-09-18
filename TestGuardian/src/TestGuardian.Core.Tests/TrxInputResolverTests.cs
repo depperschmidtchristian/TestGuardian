@@ -98,6 +98,8 @@ public class TrxInputResolverTests
     {
         var filePath = CreateFile("lauf.trx");
 
+        // _tempRoot finds lauf.trx via its directory scan; filePath names the very same file
+        // directly. Same physical file, reached through two different raw inputs.
         var result = TrxInputResolver.Resolve([_tempRoot, filePath]);
 
         Assert.AreEqual(1, result.ResolvedFilePaths.Count);
