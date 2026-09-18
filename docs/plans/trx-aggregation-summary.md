@@ -19,7 +19,8 @@ public sealed record AssemblySummary(string AssemblyName, IReadOnlyList<TestCase
     public int Skipped => TestCases.Count(t => t.Outcome == TestOutcome.Skipped);
     public int Other => TestCases.Count(t => t.Outcome == TestOutcome.Other);
     public int Total => TestCases.Count;
-    public int Executed => Passed + Failed + Other;
+    public int Attempted => Passed + Failed + Other;       // Testkörper wurde gestartet, auch bei uneindeutigem Ergebnis
+    public int CorrectlyExecuted => Passed + Failed;        // eindeutiges Verdikt erreicht
 }
 
 public sealed record AggregatedWarning(string RunName, string Message);
@@ -35,7 +36,11 @@ public sealed record TestRunOverview(
 
 **Warum Zähl-Properties statt gespeicherter Zahlen:** `AssemblySummary` speichert nur die rohe `TestCases`-Liste; `Passed`/`Failed`/`Total`/… sind berechnete Properties darüber. Damit gibt es nur eine Quelle der Wahrheit — keine Möglichkeit, dass gespeicherte Zählwerte und die zugrunde liegende Liste auseinanderlaufen. Gleiches Prinzip bei `TestRunOverview.Total`, das einfach alle `AssemblySummary.TestCases` zusammenfasst statt eigene Summen mitzuführen.
 
-**Warum `Executed` weder `LoadError` noch `Skipped` mitzählt:** Konsistent mit der bereits für Feature 4 beschlossenen Regel (LoadErrors zählen nicht als "ausgeführt", weil der Testkörper nie lief). `Skipped` (vstest-Outcome `NotExecuted`) ist vom Wortsinn her ebenfalls kein ausgeführter Test — sagt bitte Bescheid, falls du das anders siehst, aber ich würde das ohne Rückfrage so umsetzen, da es sich direkt aus der bestehenden Regel ableitet.
+**Warum es zwei Zählfelder statt einem `Executed` gibt (Korrektur nach Rückfrage, 2026-09-18):** Ursprünglich gab es nur ein `Executed`-Feld, das `Other` mitzählte — das war weder mit dir abgestimmt noch in der Begründung klar benannt, und ein Test dazu hatte einen inhaltlichen Fehler (Assert-Wert passte nicht zur eigenen Formel). Jetzt gibt es zwei Felder mit klarerer Bedeutung:
+- **`Attempted`** (`Passed + Failed + Other`): der Testkörper wurde gestartet, unabhängig davon, wie eindeutig das Ergebnis war. Schließt `LoadError` (Assembly nie geladen) und `Skipped` (bewusst nie gestartet) aus.
+- **`CorrectlyExecuted`** (`Passed + Failed`): strenger als `Attempted` — schließt zusätzlich `Other` aus, weil ein uneindeutiges/unbekanntes Ergebnis keine Sicherheit gibt, dass wirklich sinnvoll geprüft wurde.
+
+Welches der beiden Felder Feature 4 für die "0 Tests ausgeführt"- und `--min-tests`-Regel heranzieht, wird bei der Planung von `feature/exit-code-decision` entschieden — vermutlich `CorrectlyExecuted`, da es besser zum Misstrauens-Prinzip der Aufgabe passt.
 
 **Warum `FileFailures` vom Typ `IReadOnlyList<TrxReadFailure>` ist (kein neuer Wrapper-Typ):** `TrxReadFailure` aus Feature 1 trägt bereits `FilePath`, `Reason` und `Detail` — alles, was für die Anzeige einer nicht lesbaren Datei nötig ist. Ein zusätzlicher Typ wäre nur eine unnötige Hülle um dieselben Daten.
 
@@ -71,7 +76,8 @@ Keine Sonderbehandlung für eine leere Eingabe (`results` ist leer oder enthält
 | `Aggregate_NoResults_ProducesEmptyOverviewWithZeroTotal` | leere Eingabe | `Assemblies` leer, `Total.Total == 0` |
 | `Aggregate_Warnings_AreTaggedWithOriginatingRunName` | `lauf-b.trx` | `AggregatedWarning.RunName == "Beispiellauf Leer"`, Message enthält den Filtertext |
 | `Aggregate_Assemblies_AreSortedAlphabetically` | synthetisch: zwei Läufe mit vertauschter Assembly-Reihenfolge | Ausgabereihenfolge ist alphabetisch, unabhängig von Eingabereihenfolge |
-| `AssemblySummary_Executed_ExcludesLoadErrorAndSkipped` | synthetisch: eine Liste mit je einem Passed/Failed/LoadError/Skipped/Other | `Executed == 2` (nur Passed+Failed+Other), `Total == 5` |
+| `AssemblySummary_Attempted_IncludesOtherButExcludesLoadErrorAndSkipped` | synthetisch: eine Liste mit je einem Passed/Failed/LoadError/Skipped/Other | `Attempted == 3`, `Total == 5` |
+| `AssemblySummary_CorrectlyExecuted_OnlyCountsPassedAndFailed` | dieselbe synthetische Liste | `CorrectlyExecuted == 2` |
 | `TestRunOverview_Total_SumsAcrossAllAssemblySummaries` | `lauf-a.trx` + `lauf-c.trx` | `Total.Total` entspricht der Summe aller `TestCases` über beide Läufe |
 
 ## Nicht Teil dieses Features

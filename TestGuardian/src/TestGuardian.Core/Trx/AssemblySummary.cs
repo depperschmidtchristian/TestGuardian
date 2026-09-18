@@ -14,9 +14,18 @@ public sealed record AssemblySummary(string AssemblyName, IReadOnlyList<TestCase
     public int Total => TestCases.Count;
 
     /// <summary>
-    /// Tests whose body actually ran and produced a real verdict. Excludes
-    /// <see cref="TestOutcome.LoadError"/> (assembly never loaded) and
-    /// <see cref="TestOutcome.Skipped"/> (test explicitly did not execute).
+    /// Tests whose body was actually started, regardless of how clear the verdict was.
+    /// Excludes <see cref="TestOutcome.LoadError"/> (assembly never loaded) and
+    /// <see cref="TestOutcome.Skipped"/> (test explicitly did not execute), but still
+    /// includes <see cref="TestOutcome.Other"/> (e.g. Inconclusive, Timeout) since those
+    /// outcomes mean the body ran, just without a clean pass/fail result.
     /// </summary>
-    public int Executed => Passed + Failed + Other;
+    public int Attempted => Passed + Failed + Other;
+
+    /// <summary>
+    /// Tests that ran and reached an unambiguous verdict. Stricter than
+    /// <see cref="Attempted"/>: excludes <see cref="TestOutcome.Other"/> as well, since an
+    /// unrecognized/ambiguous outcome gives no real confidence that anything was verified.
+    /// </summary>
+    public int CorrectlyExecuted => Passed + Failed;
 }

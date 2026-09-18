@@ -14,6 +14,15 @@ Ergänzt `docs/plans/trx-aggregation-summary.md` um Details, die erst bei der Um
 
 Wie im Plan begründet: eine einzige Quelle der Wahrheit (die rohe `TestCases`-Liste), keine Möglichkeit für Zahlen, die von der zugrunde liegenden Liste abweichen. Das hat sich bei der Umsetzung bestätigt — `Total` ist buchstäblich nur `Assemblies.SelectMany(a => a.TestCases)`, keine eigene Summierungslogik nötig.
 
+## Korrektur: `Executed` aufgeteilt in `Attempted` und `CorrectlyExecuted`
+
+Beim Review hat der Nutzer zurecht bemängelt, dass der Test `AssemblySummary_Executed_ExcludesLoadErrorAndSkipped` einen falschen Assert-Wert hatte (`2` statt der laut eigener Formel korrekten `3`) — und dass nie klar entschieden war, ob `TestOutcome.Other` überhaupt als "ausgeführt" zählen soll. Das ursprüngliche `Executed`-Feld (`Passed + Failed + Other`) wurde durch zwei benannte Felder ersetzt:
+
+- `Attempted` (`Passed + Failed + Other`): der Testkörper wurde gestartet, auch bei uneindeutigem Ergebnis.
+- `CorrectlyExecuted` (`Passed + Failed`): striktere Variante ohne `Other`, für Fälle, in denen ein eindeutiges Verdikt gefordert ist.
+
+Der zugehörige Test wurde in zwei klar benannte Tests aufgeteilt statt einen mehrdeutigen zu behalten. Welches Feld Feature 4 tatsächlich für die Exit-Code-Entscheidung nutzt, ist dort zu klären, nicht hier.
+
 ## Build vs. Testlauf
 
 Wie schon bei `feature/trx-domain-model`: `dotnet build` lief erfolgreich (0 Fehler, 0 Warnungen). `dotnet test` wurde bewusst nicht ausgeführt — das bleibt deiner Prüfung vorbehalten.

@@ -91,22 +91,31 @@ public class TestRunAggregatorTests
     }
 
     [TestMethod]
-    public void AssemblySummary_Executed_ExcludesLoadErrorAndSkipped()
+    public void AssemblySummary_Attempted_IncludesOtherButExcludesLoadErrorAndSkipped()
     {
-        var testCases = new List<TestCaseResult>
-        {
-            new("lib.dll", "Passed1", TestOutcome.Passed, "Passed", null),
-            new("lib.dll", "Failed1", TestOutcome.Failed, "Failed", "boom"),
-            new("lib.dll", "LoadError1", TestOutcome.LoadError, "Failed", "Failed to load the test assembly or its dependencies"),
-            new("lib.dll", "Skipped1", TestOutcome.Skipped, "NotExecuted", null),
-            new("lib.dll", "Other1", TestOutcome.Other, "Inconclusive", null)
-        };
-
-        var summary = new AssemblySummary("lib.dll", testCases);
+        var summary = new AssemblySummary("lib.dll", OneOfEachOutcome());
 
         Assert.AreEqual(5, summary.Total);
-        Assert.AreEqual(2, summary.Executed, "Only Passed, Failed, and Other count as 'executed'.");
+        Assert.AreEqual(3, summary.Attempted, "Passed, Failed, and Other all mean the test body was started.");
     }
+
+    [TestMethod]
+    public void AssemblySummary_CorrectlyExecuted_OnlyCountsPassedAndFailed()
+    {
+        var summary = new AssemblySummary("lib.dll", OneOfEachOutcome());
+
+        Assert.AreEqual(2, summary.CorrectlyExecuted,
+            "Other is excluded here: an ambiguous outcome gives no confidence anything was really verified.");
+    }
+
+    private static List<TestCaseResult> OneOfEachOutcome() =>
+    [
+        new("lib.dll", "Passed1", TestOutcome.Passed, "Passed", null),
+        new("lib.dll", "Failed1", TestOutcome.Failed, "Failed", "boom"),
+        new("lib.dll", "LoadError1", TestOutcome.LoadError, "Failed", "Failed to load the test assembly or its dependencies"),
+        new("lib.dll", "Skipped1", TestOutcome.Skipped, "NotExecuted", null),
+        new("lib.dll", "Other1", TestOutcome.Other, "Inconclusive", null)
+    ];
 
     [TestMethod]
     public void TestRunOverview_Total_SumsAcrossAllAssemblySummaries()
