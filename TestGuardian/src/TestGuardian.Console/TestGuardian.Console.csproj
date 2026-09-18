@@ -7,6 +7,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- Packs as a .NET global tool so it can be installed once and then called directly
+       as "TestGuardian" from any PowerShell, instead of via "dotnet run" or the raw exe. -->
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>TestGuardian</ToolCommandName>
+    <PackageId>TestGuardian</PackageId>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\TestGuardian.Core\TestGuardian.Core.csproj" />
   </ItemGroup>
