@@ -51,7 +51,13 @@ Eine einzelne kaputte Datei innerhalb eines Mehrdatei-Laufs soll nicht den gesam
 
 ## Eingabe-Auflösung
 
-Einzeldatei, Ordner oder Suchmuster. Bei Ordner-Eingabe wird standardmäßig **rekursiv** in Unterordner nach `.trx`-Dateien gesucht; ein Schalter (z.B. `--recursive` / `--no-recursive`) erlaubt es, das explizit umzuschalten.
+Einzeldatei, Ordner oder Suchmuster. Bei Ordner-Eingabe wird **standardmäßig nicht rekursiv** gesucht (nur die oberste Ebene). Rekursion wird über `--max-depth` gesteuert (Details und Begründung in `docs/plans/multi-file-input.md`, aktualisiert 2026-09-18):
+
+- Schalter fehlt komplett → keine Rekursion (nur oberste Ebene, entspricht `maxDepth = 0`).
+- Schalter ohne Wert (`--max-depth`) → Default-Tiefe 10.
+- Schalter mit Wert (`--max-depth 3`) → genau diese Tiefe.
+
+Diese dreistufige Unterscheidung ist reine CLI-Parsing-Logik (Feature 4); die Kernlogik in `TestGuardian.Core` nimmt einfach eine konkrete Ganzzahl `maxDepth` entgegen.
 
 ## LoadError-Zählung (Entscheidung, mit Beispiel)
 
