@@ -69,6 +69,9 @@ public static class ConsoleReportPrinter
         {
             System.Console.WriteLine($"  - {reason.Message}");
         }
+
+        System.Console.WriteLine(new string('-', 70));
+        System.Console.WriteLine();
     }
 
     /// <summary>

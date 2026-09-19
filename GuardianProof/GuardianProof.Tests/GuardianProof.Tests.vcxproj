@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}</ProjectGuid>
+    <RootNamespace>GuardianProofTests</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <!-- Das Microsoft Unit Testing Framework for C++ liegt bei dieser VS-2022-Installation unter
+       VC\Auxiliary\VS\UnitTest statt im historischen VC\UnitTest-Pfad; deshalb hier explizit
+       statt sich auf implizite Toolset-Defaults zu verlassen. Der Include-Pfad wird global über
+       IncludePath gesetzt (wirkt zuverlässig auf ClCompile); der Bibliothekspfad wird direkt am
+       Link-Schritt über AdditionalLibraryDirectories gesetzt (siehe unten) — die globale
+       LibraryPath-Property allein wurde vom Linker in der Praxis nicht ausgewertet.
+
+       WICHTIG: AdditionalLibraryDirectories zeigt auf den lib-ORDNER OHNE das Plattform-
+       Unterverzeichnis ("...\lib", nicht "...\lib\x64"). CppUnitTest.h bindet die Bibliothek
+       selbst per "#pragma comment(lib, ...)" ein und referenziert dabei bereits den
+       plattformspezifischen Unterordner (z.B. "x64\Microsoft...lib") relativ zu diesem Pfad.
+       Zeigt AdditionalLibraryDirectories schon auf "...\lib\x64", verdoppelt sich das
+       Unterverzeichnis ("...\lib\x64\x64\...") und der Linker meldet LNK1104, obwohl die Datei
+       eindeutig existiert. Kein manueller AdditionalDependencies-Eintrag nötig — die Pragma-Zeile
+       übernimmt das automatisch, sobald pch.h (und damit CppUnitTest.h) eingebunden ist. -->
+  <!-- MathModule liegt jetzt in einem eigenen DLL-Projekt (MathModuleLib), nicht mehr direkt in
+       diesem Testprojekt einkompiliert. Grund: nur so kann GuardianProof.Tests.dll zur Laufzeit
+       eine echte, fehlende Abhängigkeit haben — genau der Ladefehler-Fall aus der Aufgabe
+       ("Failed to load the test assembly or its dependencies"). Simulierbar, indem
+       MathModuleLib.dll nach dem Bauen aus dem Ausgabeordner entfernt/umbenannt wird, bevor
+       vstest.console.exe läuft.
+
+       Die ProjectReference übernimmt Build-Reihenfolge und automatisches Verlinken der Import-Lib.
+       Ein zusätzlicher Kopierschritt für die DLL ist NICHT nötig: keines der beiden Projekte
+       überschreibt OutDir, daher landen beide beim Bauen über GuardianProof.sln im selben,
+       geteilten Ordner "GuardianProof\x64\<Konfiguration>\" (Standardverhalten für VC++-Projekte
+       ohne eigenes OutDir: "$(SolutionDir)$(Platform)\$(Configuration)\") — per echtem
+       msbuild-Lauf verifiziert. Das gilt auch beim Bauen einzelner Projekte aus einer in Visual
+       Studio geöffneten Solution heraus, nicht nur beim Bauen der ganzen Solution. Nur ein
+       eigenständiger msbuild-Aufruf direkt gegen die .vcxproj ohne die .sln (kein normaler
+       Arbeitsablauf) würde einen anderen, projekt-lokalen Ordner ergeben. -->
+  <PropertyGroup>
+    <IncludePath>$(VCInstallDir)Auxiliary\VS\UnitTest\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\MathModuleLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MathModuleLib\MathModuleLib.vcxproj">
+      <Project>{8c66e88b-8f1c-4a79-a311-732737ce9720}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(VCInstallDir)Auxiliary\VS\UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(VCInstallDir)Auxiliary\VS\UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="NachtlaufTests.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
