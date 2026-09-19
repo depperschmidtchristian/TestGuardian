@@ -1,0 +1,25 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NachtlaufDemo.Tests", "NachtlaufDemo.Tests\NachtlaufDemo.Tests.vcxproj", "{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}.Debug|x64.ActiveCfg = Debug|x64
+		{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}.Debug|x64.Build.0 = Debug|x64
+		{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}.Release|x64.ActiveCfg = Release|x64
+		{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A40516B6-EB16-4F52-9092-069E3B4C33BB}
+	EndGlobalSection
+EndGlobal
