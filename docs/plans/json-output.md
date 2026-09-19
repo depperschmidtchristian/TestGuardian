@@ -10,6 +10,7 @@ Ziel: Kür-Feature "Maschinenlesbare Ausgabe (JSON)" aus der Aufgabenstellung. N
 4. Domain-Records direkt serialisiert, kein paralleles DTO-Modell — es wird nur geschrieben, nie wieder eingelesen, also ist das für Records bei Deserialisierung nötige Konstruktor-Matching hier irrelevant.
 5. Modul lebt in `TestGuardian.Core`, nicht `TestGuardian.Console` (analog zu `TrxFileReader`, das auch schon File-I/O in Core macht).
 6. **Schreibbarkeits-Check für den `--to-json`-Pfad passiert so früh wie möglich** (vor Eingabe-Auflösung/Testlauf) und wird wie ein fehlerhafter Schalteraufruf behandelt: `ArgumentException` → derselbe `PrintUsageError`/WARNUNG-Pfad → exit 1, ohne dass überhaupt eine `.trx`-Datei gelesen wird.
+7. **Kritische Nachbesserung (2026-09-20): die Datei am Zielpfad wird nie geöffnet, wenn dort bereits eine Datei liegt — existiert dort schon eine Datei, wird sofort abgebrochen, ohne sie anzurühren.** Um Datenverlust unter allen Umständen auszuschließen: kein "Datei probeweise öffnen und wieder schließen"-Check mehr (das wäre bereits ein Öffnen der Zieldatei); der frühe Check prüft nur per `File.Exists`/`Directory.Exists`, ohne die Zieldatei je zu öffnen. Das eigentliche, einmalige Schreiben am Ende passiert ausschließlich mit `FileMode.CreateNew` — das schlägt atomar fehl, falls die Datei doch existiert (z.B. TOCTOU zwischen frühem Check und Programmende), statt sie zu überschreiben.
 
 ## Neue Dateien
 
@@ -32,6 +33,11 @@ public sealed record JsonReport(
 ```csharp
 namespace TestGuardian.Core.Json;
 
+/// <summary>
+/// Writes exactly once and never overwrites: opens the target with <see cref="FileMode.CreateNew"/>,
+/// which itself throws if the file already exists — the authoritative guard against data loss,
+/// independent of (and stricter than) whatever the earlier CLI-level existence check already caught.
+/// </summary>
 public static class JsonReportWriter
 {
     private static readonly JsonSerializerOptions Options = new()
@@ -42,7 +48,8 @@ public static class JsonReportWriter
 
     public static void Write(string path, JsonReport report)
     {
-        File.WriteAllText(path, JsonSerializer.Serialize(report, Options));
+        using var stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write);
+        JsonSerializer.Serialize(stream, report, Options);
     }
 }
 ```
@@ -66,41 +73,50 @@ case "--to-json":
     throw new ArgumentException("--to-json erwartet einen Zielpfad als Wert.");
 ```
 
-## Schreibbarkeits-Check (früh, vor dem Testlauf)
+## Früher Check (vor dem Testlauf) — rührt die Zieldatei nie an
 
-Neue Methode `JsonOutputPathValidator.EnsureWritable(string path)` in `TestGuardian.Console` (CLI-spezifische Vorab-Validierung — Core bleibt bis auf den eigentlichen Schreibvorgang am Ende I/O-frei für diesen Zweig):
+Neue Methode `JsonOutputPathValidator.EnsureCanCreate(string path)` in `TestGuardian.Console` (CLI-spezifische Vorab-Validierung — reine Existenz-/Pfadprüfung, öffnet die Zieldatei zu keinem Zeitpunkt):
 
-- Versucht `File.Open(path, FileMode.Create, FileAccess.Write)` und schließt sofort wieder (reiner Zugriffstest, kein Inhalt wird geschrieben — die Datei wird am Ende ohnehin mit dem echten JSON überschrieben).
-- Fängt `UnauthorizedAccessException`, `DirectoryNotFoundException`, `IOException`, `NotSupportedException`, `PathTooLongException` ab und wirft stattdessen eine `ArgumentException` mit einer verständlichen, den Pfad und die Ursache nennenden Meldung.
+- `File.Exists(path)` → existiert die Datei bereits, sofort `ArgumentException` ("Datei existiert bereits — wird nicht überschrieben, um Datenverlust zu vermeiden."). Die Datei wird dabei nicht geöffnet, nur ihre Existenz geprüft.
+- Zielverzeichnis (`Path.GetDirectoryName(path)`) existiert nicht → `ArgumentException` mit entsprechender Meldung.
+- Kein Probe-Öffnen/-Erstellen der Zieldatei selbst — das ist ausschließlich Aufgabe des tatsächlichen Schreibvorgangs am Ende (siehe unten), und zwar nur genau einmal.
 
 In `Program.cs`, direkt nach erfolgreichem `CliArgumentParser.Parse` und **vor** `TrxInputResolver.Resolve`, im selben `try`/`catch (ArgumentException)`-Block:
 
 ```csharp
 if (options.JsonOutputPath is { } jsonPath)
 {
-    JsonOutputPathValidator.EnsureWritable(jsonPath);
+    JsonOutputPathValidator.EnsureCanCreate(jsonPath);
 }
 ```
 
-## Tatsächliches Schreiben (nach der Auswertung)
+## Tatsächliches Schreiben (nach der Auswertung) — einziger Zugriff auf die Zieldatei, ausschließlich `FileMode.CreateNew`
 
-Am Ende von `Program.cs`, nach `ConsoleReportPrinter.Print(...)`:
+Am Ende von `Program.cs`, nach `ConsoleReportPrinter.Print(...)`. `JsonReportWriter.Write` öffnet ausschließlich mit `FileMode.CreateNew` (siehe oben) — das ist der einzige Zeitpunkt im gesamten Programm, an dem die Zieldatei überhaupt angefasst wird, und es schlägt garantiert fehl statt zu überschreiben, falls dort inzwischen doch eine Datei liegt (z.B. TOCTOU zwischen frühem Check und Programmende). Damit dieser seltene Fall nicht als roher, unkommentierter Stacktrace endet (inkonsistent mit jeder anderen I/O-Fehlerstelle im Projekt), fängt `Program.cs` an dieser Stelle gezielt `IOException` ab, gibt eine klare Meldung auf `Console.Error` aus und beendet mit `return 1` — unabhängig vom sonstigen Testverdikt, weil das ausdrücklich angeforderte Ergebnis (die JSON-Datei) dann nicht existiert:
 
 ```csharp
 if (options.JsonOutputPath is { } jsonPath)
 {
-    JsonReportWriter.Write(jsonPath, new JsonReport(overview, inputResolution, verdict));
-    Console.WriteLine($"JSON-Bericht geschrieben nach: {jsonPath}");
+    try
+    {
+        JsonReportWriter.Write(jsonPath, new JsonReport(overview, inputResolution, verdict));
+        Console.WriteLine($"JSON-Bericht geschrieben nach: {jsonPath}");
+    }
+    catch (IOException ex)
+    {
+        Console.Error.WriteLine($"JSON-Bericht konnte nicht geschrieben werden: {ex.Message}");
+        return 1;
+    }
 }
-```
 
-**Offene Frage (dein Ermessen):** Der frühe Check schließt die meisten Fehler aus, aber ein seltener TOCTOU-Fall bleibt (Pfad wird zwischen Check und tatsächlichem Schreiben ungültig, z.B. Netzlaufwerk getrennt). Vorschlag: den eigentlichen Schreibvorgang ebenfalls in try/catch nehmen und bei Fehlschlag mit klarer Meldung exit 1 geben — unabhängig vom sonstigen Testverdikt, weil das ausdrücklich angeforderte Ergebnis (die JSON-Datei) sonst nicht existiert, obwohl der Aufruf das nicht sichtbar macht. Sag Bescheid, falls du es anders willst (z.B. nur Warnung auf stderr, Exit-Code bleibt am Testverdikt).
+return verdict.IsSuccessful ? 0 : 1;
+```
 
 ## Tests
 
 - `CliArgumentParserTests`: `--to-json <Pfad>` setzt `JsonOutputPath` korrekt; `--to-json` ohne Wert wirft `ArgumentException`.
-- `JsonOutputPathValidatorTests` (Console.Tests, Temp-Verzeichnisse wie in `TrxInputResolverTests`): schreibbarer Pfad wirft nicht; nicht existierendes Zielverzeichnis wirft; schreibgeschützte Datei wirft.
-- `JsonReportWriterTests` (Core.Tests): geschriebene Datei lässt sich mit `JsonDocument.Parse` zurücklesen und enthält die erwarteten Felder (Assemblies, `severity` als String statt Zahl, `reasons`, `unresolvedInputs`) — kein exakter String-Vergleich (zu brüchig gegenüber Formatierungsänderungen), gleiches Prinzip wie in `ConsoleReportPrinterTests`.
+- `JsonOutputPathValidatorTests` (Console.Tests, Temp-Verzeichnisse wie in `TrxInputResolverTests`): Pfad in existierendem Verzeichnis, Datei existiert noch nicht → wirft nicht; **Datei existiert bereits → wirft `ArgumentException`, ohne die Datei anzurühren (Inhalt bleibt exakt erhalten — das ist der eigentliche Kernfall dieses Features)**; nicht existierendes Zielverzeichnis → wirft.
+- `JsonReportWriterTests` (Core.Tests): geschriebene Datei lässt sich mit `JsonDocument.Parse` zurücklesen und enthält die erwarteten Felder (Assemblies, `severity` als String statt Zahl, `reasons`, `unresolvedInputs`) — kein exakter String-Vergleich (zu brüchig gegenüber Formatierungsänderungen), gleiches Prinzip wie in `ConsoleReportPrinterTests`; zusätzlich ein Test, der `Write` gegen einen bereits existierenden Pfad aufruft und prüft, dass eine `IOException` fliegt **und** der vorhandene Dateiinhalt unverändert bleibt.
 
 ## Nicht Teil dieses Features
 
