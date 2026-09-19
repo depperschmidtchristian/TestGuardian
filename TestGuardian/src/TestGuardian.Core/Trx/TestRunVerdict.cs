@@ -57,7 +57,12 @@ public static class TestRunVerdict
                 $"{overview.Total.LoadError} Test(s) konnten nicht geladen werden (Bibliothek nicht ladbar)."));
         }
 
-        if (overview.Total.CorrectlyExecuted == 0)
+        // Nur ein Rot-Grund, wenn überhaupt etwas gelesen wurde: 0 Tests bei mindestens einer
+        // aufgelösten Datei ist der eigentliche "lügende grüne Balken" (z.B. lauf-b.trx — Filter
+        // trifft nichts, der Lauf selbst meldet trotzdem 0 Tests). Wurde dagegen gar keine Datei
+        // aufgelöst, ist die 0 nur eine Folge von UnresolvedInputs (Gelb) und würde denselben
+        // Fehler doppelt melden — siehe docs/decisions/input-warning-level.md.
+        if (overview.Total.CorrectlyExecuted == 0 && inputResolution.ResolvedFilePaths.Count > 0)
         {
             reasons.Add(new VerdictReason(VerdictReasonKind.ZeroTestsExecuted,
                 "Es wurden 0 Tests mit eindeutigem Ergebnis ausgeführt."));

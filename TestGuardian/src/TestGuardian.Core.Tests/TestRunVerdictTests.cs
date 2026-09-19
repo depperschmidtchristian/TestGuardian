@@ -48,11 +48,35 @@ public class TestRunVerdictTests
     public void Evaluate_ZeroCorrectlyExecuted_IsUnsuccessfulWithZeroTestsReason()
     {
         var overview = AggregateSamples("lauf-b.trx"); // 0 tests, filter matched nothing
+        // lauf-b.trx WAS actually resolved and read — unlike NoUnresolvedInputs, which the other
+        // tests use as a "no CLI input issues" placeholder without reflecting what got aggregated.
+        var inputResolution = new InputResolutionResult([SampleData.PathTo("lauf-b.trx")], []);
 
-        var verdict = TestRunVerdict.Evaluate(overview, NoUnresolvedInputs, minTests: null);
+        var verdict = TestRunVerdict.Evaluate(overview, inputResolution, minTests: null);
 
         Assert.IsFalse(verdict.IsSuccessful);
+        Assert.AreEqual(VerdictSeverity.Red, verdict.Severity,
+            "A run that was actually read and reports 0 tests is the genuine 'lying green bar' case — stays Red.");
         Assert.IsTrue(verdict.Reasons.Any(r => r.Kind == VerdictReasonKind.ZeroTestsExecuted));
+    }
+
+    [TestMethod]
+    public void Evaluate_NothingResolvedAtAll_ZeroTestsIsNotAddedOnTopOfUnresolvedInputs()
+    {
+        // The scenario that surfaced this: "TestGuardian *.trx --max-depth 5" in a folder with no
+        // .trx directly in it — the pattern resolves nothing, so overview is empty (0 tests) purely
+        // as a consequence of the input problem. That must not ALSO raise a Red ZeroTestsExecuted
+        // reason on top of the already-Yellow UnresolvedInputs one for the same root cause.
+        var overview = new TestRunOverview([], [], []);
+        var inputResolution = new InputResolutionResult(
+            [],
+            [new UnresolvedInput("*.trx", "Das Suchmuster '*.trx' hat keine Datei getroffen.")]);
+
+        var verdict = TestRunVerdict.Evaluate(overview, inputResolution, minTests: null);
+
+        Assert.AreEqual(VerdictSeverity.Yellow, verdict.Severity);
+        Assert.IsFalse(verdict.Reasons.Any(r => r.Kind == VerdictReasonKind.ZeroTestsExecuted));
+        Assert.IsTrue(verdict.Reasons.Any(r => r.Kind == VerdictReasonKind.UnresolvedInputs));
     }
 
     [TestMethod]

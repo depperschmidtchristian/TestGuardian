@@ -20,8 +20,19 @@ Nebenbei: die Ausgabe wandert dabei von `Console.Error` (bisher) nach `Console.O
 
 Deine Entscheidung: `1` bleibt für Rot und Gelb gleich. Die Pflichtanforderung verlangt nur "≠ 0 bei kaputter Eingabe/Testlauf", kein CI-Skript im Rahmen dieser Aufgabe braucht die Unterscheidung automatisiert — ein zweiter Code (`2`) wäre spekulative Vorbereitung auf einen nicht belegten Bedarf.
 
+## Nachbesserung: `ZeroTestsExecuted` nur bei mindestens einer aufgelösten Datei
+
+Ausgelöst durch deine Rückfrage zu `TestGuardian *.trx --max-depth 5` (ausgeführt in einem Ordner ohne `.trx` direkt darin, nur in Unterordnern): `*.trx` wird von `TrxInputResolver` als Suchmuster behandelt (nicht als Ordner), und `--max-depth` gilt laut `docs/plans/multi-file-input.md` bewusst **nicht** für Suchmuster — das Muster trifft 0 Dateien → `UnresolvedInputs` (Gelb). Weil dadurch aber gar keine Datei gelesen wurde, war `overview.Total.CorrectlyExecuted` ebenfalls 0, was zusätzlich den Rot-Grund `ZeroTestsExecuted` auslöste. Per Vorrangregel gewann Rot — URTEIL: ROT statt der erwarteten WARNUNG, obwohl die einzige tatsächliche Ursache ein Eingabeproblem war.
+
+Das war eine unbeabsichtigte Doppel-Meldung derselben Ursache: einmal als `UnresolvedInputs` (korrekt), einmal als `ZeroTestsExecuted` (irreführend, weil es suggeriert, ein echter Testlauf hätte 0 Ergebnisse geliefert). `TestRunVerdict.Evaluate` prüft jetzt zusätzlich `inputResolution.ResolvedFilePaths.Count > 0`, bevor `ZeroTestsExecuted` hinzugefügt wird:
+
+- **Mindestens eine Datei wurde gelesen, Ergebnis trotzdem 0 Tests** (der eigentliche "lügende grüne Balken", z.B. `lauf-b.trx`: Filter trifft nichts, der Lauf selbst meldet 0) → bleibt Rot, unverändert.
+- **Gar keine Datei wurde aufgelöst** (wie im `*.trx`-Fall) → `ZeroTestsExecuted` entfällt, `UnresolvedInputs` bleibt als einziger, zutreffender Grund stehen → WARNUNG.
+
+Bewusst **nicht** angefasst: `BelowMinimumTestCount` (Schalter `--min-tests`) hat dieselbe Doppel-Meldungs-Anfälligkeit (weniger als `n` Tests liefen, weil nichts aufgelöst wurde), wurde aber nicht Teil dieser Entscheidung — eigene Ermessensfrage, die noch offen ist, falls sie konkret auftritt.
+
 ## Tests
 
-- `TestRunVerdictTests`: bestehender `UnreadableFiles`-Test um eine explizite `Severity == Red`-Prüfung ergänzt; `UnresolvedInputPresent`-Test umbenannt/erweitert auf `Severity == Yellow`; neuer Test `Evaluate_UnresolvedInputAndRealFailureCoexist_SeverityIsRed` für die Vorrangregel (Rot gewinnt, Gelb-Grund bleibt trotzdem in `Reasons`).
+- `TestRunVerdictTests`: bestehender `UnreadableFiles`-Test um eine explizite `Severity == Red`-Prüfung ergänzt; `UnresolvedInputPresent`-Test umbenannt/erweitert auf `Severity == Yellow`; neuer Test `Evaluate_UnresolvedInputAndRealFailureCoexist_SeverityIsRed` für die Vorrangregel (Rot gewinnt, Gelb-Grund bleibt trotzdem in `Reasons`); `Evaluate_ZeroCorrectlyExecuted_IsUnsuccessfulWithZeroTestsReason` bekommt jetzt eine echte `InputResolutionResult` mit der tatsächlich gelesenen Datei (statt der bisher zweckentfremdeten `NoUnresolvedInputs`-Platzhalter-Konstante, die `ResolvedFilePaths` immer leer ließ); neuer Test `Evaluate_NothingResolvedAtAll_ZeroTestsIsNotAddedOnTopOfUnresolvedInputs` deckt genau deinen `*.trx`-Fall ab.
 - `ConsoleReportPrinterTests`: neuer Fall für `VerdictSeverity.Yellow` (Ausgabe enthält "WARNUNG", nicht "URTEIL: ROT"/"URTEIL: GRUEN") sowie ein neuer Fall für `PrintUsageError`. Der bestehende "FailedRun"-Test wurde von `UnresolvedInputs` (jetzt Gelb) auf `RealTestFailures` (Rot) umgestellt, damit er weiterhin tatsächlich den Rot-Pfad prüft.
 - Wie immer per [[workflow-testguardian]] Punkt 1: `dotnet build` habe ich selbst laufen lassen (reiner Kompilierfehler-Check, keine Testaussage), `dotnet test` bewusst nicht — das bestätigst du.
