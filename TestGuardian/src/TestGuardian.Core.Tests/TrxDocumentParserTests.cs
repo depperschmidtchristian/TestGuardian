@@ -51,6 +51,44 @@ public class TrxDocumentParserTests
     }
 
     [TestMethod]
+    public void Parse_ExecutionContextLoadFailure_ClassifiesAsLoadError()
+    {
+        const string xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <TestRun id="33333333-3333-3333-3333-333333333333" name="Synthetic Execution Context Failure" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+              <ResultSummary outcome="Failed">
+                <Counters total="1" executed="1" passed="0" failed="1" />
+              </ResultSummary>
+              <TestDefinitions>
+                <UnitTest name="SomeTest" storage="nachtlaufdemo.tests.dll" id="id-1">
+                  <Execution id="exec-1" />
+                  <TestMethod codeBase="nachtlaufdemo.tests.dll" className="C" name="SomeTest" />
+                </UnitTest>
+              </TestDefinitions>
+              <Results>
+                <UnitTestResult executionId="exec-1" testId="id-1" testName="SomeTest" outcome="Failed">
+                  <Output>
+                    <ErrorInfo>
+                      <Message>Failed to set up the execution context to run the test</Message>
+                    </ErrorInfo>
+                  </Output>
+                </UnitTestResult>
+              </Results>
+            </TestRun>
+            """;
+
+        var result = TrxDocumentParser.Parse(xml);
+
+        var success = result as TrxReadResult.Success;
+        Assert.IsNotNull(success);
+        var testCase = success!.Run.TestCases.Single();
+        Assert.AreEqual(TestOutcome.LoadError, testCase.Outcome,
+            "This is the message a real vstest.console.exe run produces for a missing native dependency DLL " +
+            "(observed against NachtlaufDemo.Tests, see docs/decisions/nachtlauf-demo-skeleton.md) — must be " +
+            "treated the same as the 'Failed to load the test assembly or its dependencies' fixture wording.");
+    }
+
+    [TestMethod]
     public void Parse_CleanGreenRun_AllPassedNoWarnings()
     {
         var xml = File.ReadAllText(SampleData.PathTo("lauf-d.trx"));

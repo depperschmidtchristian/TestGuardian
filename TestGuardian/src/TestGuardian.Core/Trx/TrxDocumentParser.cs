@@ -12,7 +12,14 @@ public static class TrxDocumentParser
 {
     private static readonly XNamespace Ns = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
 
-    private const string LoadFailureMarker = "Failed to load the test assembly or its dependencies";
+    // Zwei bekannte Formulierungen für denselben Fall (Testkörper lief nie): die eine aus den
+    // Beispieldaten (lauf-c.trx), die andere real beobachtet bei vstest.console.exe, wenn eine
+    // Abhängigkeits-DLL des nativen Testcontainers fehlt (siehe docs/decisions/nachtlauf-demo-skeleton.md).
+    private static readonly string[] LoadFailureMarkers =
+    {
+        "Failed to load the test assembly or its dependencies",
+        "Failed to set up the execution context to run the test"
+    };
 
     public static TrxReadResult Parse(string xmlContent)
     {
@@ -100,7 +107,8 @@ public static class TrxDocumentParser
         {
             case "Passed":
                 return TestOutcome.Passed;
-            case "Failed" when errorMessage?.Contains(LoadFailureMarker, StringComparison.Ordinal) == true:
+            case "Failed" when errorMessage is not null
+                && LoadFailureMarkers.Any(marker => errorMessage.Contains(marker, StringComparison.Ordinal)):
                 return TestOutcome.LoadError;
             case "Failed":
                 return TestOutcome.Failed;
