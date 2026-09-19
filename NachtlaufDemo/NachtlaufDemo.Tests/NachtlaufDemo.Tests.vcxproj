@@ -48,7 +48,16 @@
        statt sich auf implizite Toolset-Defaults zu verlassen. Der Include-Pfad wird global über
        IncludePath gesetzt (wirkt zuverlässig auf ClCompile); der Bibliothekspfad wird direkt am
        Link-Schritt über AdditionalLibraryDirectories gesetzt (siehe unten) — die globale
-       LibraryPath-Property allein wurde vom Linker in der Praxis nicht ausgewertet. -->
+       LibraryPath-Property allein wurde vom Linker in der Praxis nicht ausgewertet.
+
+       WICHTIG: AdditionalLibraryDirectories zeigt auf den lib-ORDNER OHNE das Plattform-
+       Unterverzeichnis ("...\lib", nicht "...\lib\x64"). CppUnitTest.h bindet die Bibliothek
+       selbst per "#pragma comment(lib, ...)" ein und referenziert dabei bereits den
+       plattformspezifischen Unterordner (z.B. "x64\Microsoft...lib") relativ zu diesem Pfad.
+       Zeigt AdditionalLibraryDirectories schon auf "...\lib\x64", verdoppelt sich das
+       Unterverzeichnis ("...\lib\x64\x64\...") und der Linker meldet LNK1104, obwohl die Datei
+       eindeutig existiert. Kein manueller AdditionalDependencies-Eintrag nötig — die Pragma-Zeile
+       übernimmt das automatisch, sobald pch.h (und damit CppUnitTest.h) eingebunden ist. -->
   <PropertyGroup>
     <IncludePath>$(VCInstallDir)Auxiliary\VS\UnitTest\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -65,8 +74,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(VCInstallDir)Auxiliary\VS\UnitTest\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VCInstallDir)Auxiliary\VS\UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -84,8 +92,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(VCInstallDir)Auxiliary\VS\UnitTest\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VCInstallDir)Auxiliary\VS\UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
