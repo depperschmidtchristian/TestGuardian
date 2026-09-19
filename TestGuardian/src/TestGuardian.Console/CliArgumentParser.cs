@@ -44,6 +44,15 @@ public static class CliArgumentParser
             }
         }
 
+        if (inputs.Count == 0)
+        {
+            // No positional input at all means TrxInputResolver never even attempts to resolve
+            // anything, so neither ResolvedFilePaths nor UnresolvedInputs ends up non-empty — nothing
+            // downstream would flag this as a problem otherwise (see docs/decisions/input-warning-level.md).
+            throw new ArgumentException(
+                "Keine Eingabe angegeben. Bitte mindestens eine .trx-Datei, einen Ordner oder ein Suchmuster angeben.");
+        }
+
         return new CliOptions(inputs, maxDepth, minTests);
     }
 }

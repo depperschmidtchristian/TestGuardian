@@ -54,6 +54,20 @@ public class CliArgumentParserTests
     }
 
     [TestMethod]
+    public void Parse_NoInputsAtAll_Throws()
+    {
+        // Otherwise neither ResolvedFilePaths nor UnresolvedInputs ends up with anything to report,
+        // and the run silently comes back GRUEN despite 0 tests ever having executed.
+        Assert.ThrowsException<ArgumentException>(() => CliArgumentParser.Parse([]));
+    }
+
+    [TestMethod]
+    public void Parse_OnlyOptionsNoPositionalInputs_Throws()
+    {
+        Assert.ThrowsException<ArgumentException>(() => CliArgumentParser.Parse(["--max-depth", "3"]));
+    }
+
+    [TestMethod]
     public void Parse_MixedInputsAndOptions_SeparatesCorrectly()
     {
         var options = CliArgumentParser.Parse(["a.trx", "--max-depth", "2", "b.trx"]);
