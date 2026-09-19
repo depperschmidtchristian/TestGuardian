@@ -70,9 +70,9 @@ public static class ConsoleReportPrinter
     {
         var (color, label) = verdict.Severity switch
         {
-            VerdictSeverity.Green => (ConsoleColor.Green, "GRUEN"),
+            VerdictSeverity.Green => (ConsoleColor.Green, "ERFOLGREICH"),
             VerdictSeverity.Yellow => (ConsoleColor.Yellow, "WARNUNG"),
-            VerdictSeverity.Red => (ConsoleColor.Red, "ROT"),
+            VerdictSeverity.Red => (ConsoleColor.Red, "FEHLERHAFT"),
             _ => throw new ArgumentOutOfRangeException(nameof(verdict), verdict.Severity, "Unbekannte VerdictSeverity.")
         };
 
