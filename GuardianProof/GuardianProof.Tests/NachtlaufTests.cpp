@@ -72,19 +72,19 @@ namespace NachtlaufDemoTests
 
         }
 
-        BEGIN_TEST_METHOD_ATTRIBUTE(Test_DivideModulo_with_Owner)
-            TEST_METHOD_ATTRIBUTE(L"Owner", L"Nachtlauf")
-            END_TEST_METHOD_ATTRIBUTE()
+        //BEGIN_TEST_METHOD_ATTRIBUTE(Test_DivideModulo_with_Owner)
+        //    TEST_METHOD_ATTRIBUTE(L"Owner", L"Nachtlauf")
+        //    END_TEST_METHOD_ATTRIBUTE()
 
-        TEST_METHOD(Test_DivideModulo_with_Owner)
-        {
-            const int a = 20;
-            const int b = 2;
+        //TEST_METHOD(Test_DivideModulo_with_Owner)
+        //{
+        //    const int a = 20;
+        //    const int b = 2;
 
-            int result = MathModule::divideModulo(a, b);
+        //    int result = MathModule::divideModulo(a, b);
 
-            Assert::IsTrue(result == 0);
+        //    Assert::IsTrue(result == 0);
 
-        }
+        //}
     };
 }

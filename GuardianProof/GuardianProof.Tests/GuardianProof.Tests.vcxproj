@@ -14,7 +14,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}</ProjectGuid>
-    <RootNamespace>NachtlaufDemoTests</RootNamespace>
+    <RootNamespace>GuardianProofTests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -59,7 +59,7 @@
        eindeutig existiert. Kein manueller AdditionalDependencies-Eintrag nötig — die Pragma-Zeile
        übernimmt das automatisch, sobald pch.h (und damit CppUnitTest.h) eingebunden ist. -->
   <!-- MathModule liegt jetzt in einem eigenen DLL-Projekt (MathModuleLib), nicht mehr direkt in
-       diesem Testprojekt einkompiliert. Grund: nur so kann NachtlaufDemo.Tests.dll zur Laufzeit
+       diesem Testprojekt einkompiliert. Grund: nur so kann GuardianProof.Tests.dll zur Laufzeit
        eine echte, fehlende Abhängigkeit haben — genau der Ladefehler-Fall aus der Aufgabe
        ("Failed to load the test assembly or its dependencies"). Simulierbar, indem
        MathModuleLib.dll nach dem Bauen aus dem Ausgabeordner entfernt/umbenannt wird, bevor
@@ -67,8 +67,8 @@
 
        Die ProjectReference übernimmt Build-Reihenfolge und automatisches Verlinken der Import-Lib.
        Ein zusätzlicher Kopierschritt für die DLL ist NICHT nötig: keines der beiden Projekte
-       überschreibt OutDir, daher landen beide beim Bauen über NachtlaufDemo.sln im selben,
-       geteilten Ordner "NachtlaufDemo\x64\<Konfiguration>\" (Standardverhalten für VC++-Projekte
+       überschreibt OutDir, daher landen beide beim Bauen über GuardianProof.sln im selben,
+       geteilten Ordner "GuardianProof\x64\<Konfiguration>\" (Standardverhalten für VC++-Projekte
        ohne eigenes OutDir: "$(SolutionDir)$(Platform)\$(Configuration)\") — per echtem
        msbuild-Lauf verifiziert. Das gilt auch beim Bauen einzelner Projekte aus einer in Visual
        Studio geöffneten Solution heraus, nicht nur beim Bauen der ganzen Solution. Nur ein

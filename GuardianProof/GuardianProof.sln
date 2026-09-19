@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NachtlaufDemo.Tests", "NachtlaufDemo.Tests\NachtlaufDemo.Tests.vcxproj", "{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GuardianProof.Tests", "GuardianProof.Tests\GuardianProof.Tests.vcxproj", "{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MathModuleLib", "MathModuleLib\MathModuleLib.vcxproj", "{8C66E88B-8F1C-4A79-A311-732737CE9720}"
 EndProject
