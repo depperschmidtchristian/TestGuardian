@@ -26,6 +26,14 @@ Wie im Plan begründet: Der Aufgabentext warnt ausdrücklich vor dem 32-vs-64-Bi
 
 Ich habe den Build **nicht** selbst ausgeführt (`devenv`/`msbuild`) — das fällt unter "Builds/Tests nicht selbst validieren" ([[workflow-testguardian]] Punkt 1, sinngemäß übertragen). Falls das Öffnen in Visual Studio oder der erste Build Nacharbeit braucht (z.B. an den `IncludePath`/`LibraryPath`-Einträgen), ist das erwartbar und kein Zeichen für einen grundsätzlich falschen Ansatz.
 
+## Nachbesserung: LNK1104, Bibliothekspfad wurde beim Linken nicht gefunden
+
+Beim ersten Build kam `LNK1104: Datei "x64\Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib" kann nicht geöffnet werden.` Der Compile-Schritt lief fehlerfrei durch (also war `$(VCInstallDir)` für `IncludePath` korrekt aufgelöst — `CppUnitTest.h` wurde gefunden), nur der Link-Schritt fand die `.lib` nicht.
+
+**Ursache:** Die globale `<LibraryPath>`-Property wird zwar von VC++-Projekten für die "VC++-Verzeichnisse"-Seite verwendet, aber in der Praxis nicht zuverlässig automatisch in die tatsächliche Linker-Suchpfadliste des `Link`-Build-Schritts übernommen — anders als `<IncludePath>`, das beim Compiler-Schritt zuverlässig wirkt. Deshalb wurde die Datei trotz korrektem, existierendem Pfad nicht gefunden.
+
+**Fix:** `AdditionalLibraryDirectories` direkt am `Link`-Element in beiden `ItemDefinitionGroup`s ergänzt (`$(VCInstallDir)Auxiliary\VS\UnitTest\lib\$(Platform)`) — das erzeugt zuverlässig einen `/LIBPATH:`-Schalter für den Linker, unabhängig von der globalen Property. Die globale `<LibraryPath>`-Zuweisung wurde entfernt (toter, nicht wirksamer Code), `<IncludePath>` bleibt bestehen, da sie nachweislich funktioniert.
+
 ## Nebenfund: zwei unabhängige, unfertige Änderungen im Arbeitsverzeichnis
 
 Beim Anlegen dieses Features fielen zwei bereits vorhandene, unstaged Änderungen auf `main`-Stand auf (vor dem Branchen dieses Features entstanden, nicht von mir vorgenommen):

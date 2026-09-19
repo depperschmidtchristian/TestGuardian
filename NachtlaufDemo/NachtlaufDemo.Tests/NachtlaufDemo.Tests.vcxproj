@@ -45,10 +45,12 @@
   <PropertyGroup Label="UserMacros" />
   <!-- Das Microsoft Unit Testing Framework for C++ liegt bei dieser VS-2022-Installation unter
        VC\Auxiliary\VS\UnitTest statt im historischen VC\UnitTest-Pfad; deshalb hier explizit
-       statt sich auf implizite Toolset-Defaults zu verlassen. -->
+       statt sich auf implizite Toolset-Defaults zu verlassen. Der Include-Pfad wird global über
+       IncludePath gesetzt (wirkt zuverlässig auf ClCompile); der Bibliothekspfad wird direkt am
+       Link-Schritt über AdditionalLibraryDirectories gesetzt (siehe unten) — die globale
+       LibraryPath-Property allein wurde vom Linker in der Praxis nicht ausgewertet. -->
   <PropertyGroup>
     <IncludePath>$(VCInstallDir)Auxiliary\VS\UnitTest\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(VCInstallDir)Auxiliary\VS\UnitTest\lib\$(Platform);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -63,6 +65,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(VCInstallDir)Auxiliary\VS\UnitTest\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -81,6 +84,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(VCInstallDir)Auxiliary\VS\UnitTest\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Microsoft.VisualStudio.TestTools.CppUnitTestFramework.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
