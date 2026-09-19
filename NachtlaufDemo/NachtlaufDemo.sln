@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NachtlaufDemo.Tests", "NachtlaufDemo.Tests\NachtlaufDemo.Tests.vcxproj", "{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MathModuleLib", "MathModuleLib\MathModuleLib.vcxproj", "{8C66E88B-8F1C-4A79-A311-732737CE9720}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -15,6 +17,10 @@ Global
 		{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}.Debug|x64.Build.0 = Debug|x64
 		{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}.Release|x64.ActiveCfg = Release|x64
 		{6C12AC0F-CF92-46FB-98CC-A2C9AED9DA04}.Release|x64.Build.0 = Release|x64
+		{8C66E88B-8F1C-4A79-A311-732737CE9720}.Debug|x64.ActiveCfg = Debug|x64
+		{8C66E88B-8F1C-4A79-A311-732737CE9720}.Debug|x64.Build.0 = Debug|x64
+		{8C66E88B-8F1C-4A79-A311-732737CE9720}.Release|x64.ActiveCfg = Release|x64
+		{8C66E88B-8F1C-4A79-A311-732737CE9720}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

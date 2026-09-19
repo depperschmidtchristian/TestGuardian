@@ -58,9 +58,35 @@
        Unterverzeichnis ("...\lib\x64\x64\...") und der Linker meldet LNK1104, obwohl die Datei
        eindeutig existiert. Kein manueller AdditionalDependencies-Eintrag nötig — die Pragma-Zeile
        übernimmt das automatisch, sobald pch.h (und damit CppUnitTest.h) eingebunden ist. -->
+  <!-- MathModule liegt jetzt in einem eigenen DLL-Projekt (MathModuleLib), nicht mehr direkt in
+       diesem Testprojekt einkompiliert. Grund: nur so kann NachtlaufDemo.Tests.dll zur Laufzeit
+       eine echte, fehlende Abhängigkeit haben — genau der Ladefehler-Fall aus der Aufgabe
+       ("Failed to load the test assembly or its dependencies"). Simulierbar, indem
+       MathModuleLib.dll nach dem Bauen aus dem Ausgabeordner entfernt/umbenannt wird, bevor
+       vstest.console.exe läuft.
+
+       Die ProjectReference übernimmt Build-Reihenfolge und automatisches Verlinken der Import-Lib.
+       Ein zusätzlicher Kopierschritt für die DLL ist NICHT nötig: keines der beiden Projekte
+       überschreibt OutDir, daher landen beide beim Bauen über NachtlaufDemo.sln im selben,
+       geteilten Ordner "NachtlaufDemo\x64\<Konfiguration>\" (Standardverhalten für VC++-Projekte
+       ohne eigenes OutDir: "$(SolutionDir)$(Platform)\$(Configuration)\") — per echtem
+       msbuild-Lauf verifiziert. Das gilt auch beim Bauen einzelner Projekte aus einer in Visual
+       Studio geöffneten Solution heraus, nicht nur beim Bauen der ganzen Solution. Nur ein
+       eigenständiger msbuild-Aufruf direkt gegen die .vcxproj ohne die .sln (kein normaler
+       Arbeitsablauf) würde einen anderen, projekt-lokalen Ordner ergeben. -->
   <PropertyGroup>
     <IncludePath>$(VCInstallDir)Auxiliary\VS\UnitTest\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\MathModuleLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MathModuleLib\MathModuleLib.vcxproj">
+      <Project>{8c66e88b-8f1c-4a79-a311-732737ce9720}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -103,6 +129,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="NachtlaufTests.cpp" />
+    <ClCompile Include="TaglaufTests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
