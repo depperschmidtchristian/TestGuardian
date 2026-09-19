@@ -23,7 +23,7 @@ public class ConsoleReportPrinterTests
         var output = CaptureOutput(() => ConsoleReportPrinter.Print(overview, new InputResolutionResult([], []), verdict));
 
         StringAssert.Contains(output, "widgetlib.testcpp.dll");
-        StringAssert.Contains(output, "GRUEN");
+        StringAssert.Contains(output, "ERFOLGREICH");
     }
 
     [TestMethod]
@@ -43,7 +43,7 @@ public class ConsoleReportPrinterTests
         {
             StringAssert.Contains(output, reason.Message);
         }
-        StringAssert.Contains(output, "ROT");
+        StringAssert.Contains(output, "FEHLERHAFT");
     }
 
     [TestMethod]
@@ -60,8 +60,8 @@ public class ConsoleReportPrinterTests
 
         StringAssert.Contains(output, "WARNUNG");
         StringAssert.Contains(output, reasons[0].Message);
-        Assert.IsFalse(output.Contains("URTEIL: ROT"));
-        Assert.IsFalse(output.Contains("URTEIL: GRUEN"));
+        Assert.IsFalse(output.Contains("URTEIL: FEHLERHAFT"));
+        Assert.IsFalse(output.Contains("URTEIL: ERFOLGREICH"));
     }
 
     [TestMethod]
