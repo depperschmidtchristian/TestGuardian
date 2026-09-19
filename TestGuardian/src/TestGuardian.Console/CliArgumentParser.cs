@@ -1,6 +1,6 @@
-namespace TestGuardian.Console;
+using TestGuardian.Console.Models;
 
-public sealed record CliOptions(IReadOnlyList<string> Inputs, int MaxDepth, int? MinTests);
+namespace TestGuardian.Console;
 
 /// <summary>
 /// Hand-rolled instead of a library like System.CommandLine — see docs/decisions/exit-code-decision.md

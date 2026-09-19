@@ -1,4 +1,4 @@
-namespace TestGuardian.Core.Trx;
+namespace TestGuardian.Core.Trx.Models;
 
 /// <summary>
 /// Reported once per file by <see cref="TrxBatchReader.ReadAll"/>. <see cref="TestsReadSoFar"/>

@@ -1,5 +1,6 @@
-using TestGuardian.Core.Input;
+using TestGuardian.Core.Input.Models;
 using TestGuardian.Core.Trx;
+using TestGuardian.Core.Trx.Models;
 
 namespace TestGuardian.Core.Tests;
 

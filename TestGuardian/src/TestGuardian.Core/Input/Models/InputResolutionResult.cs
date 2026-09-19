@@ -1,4 +1,4 @@
-namespace TestGuardian.Core.Input;
+namespace TestGuardian.Core.Input.Models;
 
 public sealed record InputResolutionResult(
     IReadOnlyList<string> ResolvedFilePaths,

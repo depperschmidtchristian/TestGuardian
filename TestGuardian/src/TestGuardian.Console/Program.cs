@@ -1,7 +1,9 @@
 using TestGuardian.Core;
 using TestGuardian.Core.Input;
 using TestGuardian.Core.Trx;
+using TestGuardian.Core.Trx.Models;
 using TestGuardian.Console;
+using TestGuardian.Console.Models;
 
 CliOptions options;
 try

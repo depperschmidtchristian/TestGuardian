@@ -1,4 +1,4 @@
-namespace TestGuardian.Core.Trx;
+namespace TestGuardian.Core.Trx.Models;
 
 public sealed record TestRunResult(
     string RunName,

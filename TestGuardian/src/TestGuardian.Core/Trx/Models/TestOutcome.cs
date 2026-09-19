@@ -1,4 +1,4 @@
-namespace TestGuardian.Core.Trx;
+namespace TestGuardian.Core.Trx.Models;
 
 public enum TestOutcome
 {

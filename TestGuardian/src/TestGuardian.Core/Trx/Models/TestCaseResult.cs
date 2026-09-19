@@ -1,4 +1,4 @@
-namespace TestGuardian.Core.Trx;
+namespace TestGuardian.Core.Trx.Models;
 
 /// <summary>
 /// A single classified test result. <see cref="RawOutcome"/> preserves the original

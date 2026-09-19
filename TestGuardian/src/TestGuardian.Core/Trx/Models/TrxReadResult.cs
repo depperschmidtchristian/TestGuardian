@@ -1,4 +1,4 @@
-namespace TestGuardian.Core.Trx;
+namespace TestGuardian.Core.Trx.Models;
 
 /// <summary>
 /// Closed result of reading a run: either it succeeded, or it failed for one of the

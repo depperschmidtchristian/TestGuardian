@@ -1,4 +1,4 @@
-namespace TestGuardian.Core.Trx;
+namespace TestGuardian.Core.Trx.Models;
 
 /// <summary>
 /// The combined view over every run handed to <see cref="TestRunAggregator.Aggregate"/>:

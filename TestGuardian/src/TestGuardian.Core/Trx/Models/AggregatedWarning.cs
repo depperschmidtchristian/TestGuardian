@@ -1,4 +1,4 @@
-namespace TestGuardian.Core.Trx;
+namespace TestGuardian.Core.Trx.Models;
 
 /// <summary>
 /// A <see cref="RunWarning"/> tagged with the name of the run it came from. Once multiple

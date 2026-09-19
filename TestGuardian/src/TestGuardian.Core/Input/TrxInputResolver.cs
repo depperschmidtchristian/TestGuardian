@@ -1,3 +1,5 @@
+using TestGuardian.Core.Input.Models;
+
 namespace TestGuardian.Core.Input;
 
 /// <summary>

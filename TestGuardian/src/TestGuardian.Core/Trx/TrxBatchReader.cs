@@ -1,3 +1,5 @@
+using TestGuardian.Core.Trx.Models;
+
 namespace TestGuardian.Core.Trx;
 
 /// <summary>

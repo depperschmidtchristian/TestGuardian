@@ -1,5 +1,6 @@
 using System.Xml;
 using System.Xml.Linq;
+using TestGuardian.Core.Trx.Models;
 
 namespace TestGuardian.Core.Trx;
 
