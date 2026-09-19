@@ -73,12 +73,13 @@ var (color, label) = verdict.Severity switch
 
 ("WARNUNG" statt z.B. "GELB", weil es beschreibt *was* es ist, nicht nur die Farbe — konsistent mit "GRUEN"/"ROT", die auch das Urteil selbst benennen, nicht nur die Farbe.)
 
-## Offene Entscheidungen (bitte bestätigen, bevor ich das umsetze)
+## Entscheidungen (bestätigt am 2026-09-19)
 
-1. **Zählt `UnreadableFiles` (Datei fehlt/leer/kaputtes XML) als Gelb oder bleibt Rot?**
-   Dein Beispiel nennt "falscher Pfad, zu viele Argumente" — das trifft eindeutig auf `UnresolvedInputs` zu. Eine Datei, die zwar gefunden wurde, deren *Inhalt* aber kaputt ist (abgeschnittenes XML, 0 Byte), könnte ebenso ein Tippfehler sein (falsche Datei erwischt) — oder aber ein echtes Symptom eines kaputten Testlaufs/CI-Envs (z.B. Prozess während des Schreibens abgestürzt). Ich tendiere dazu, das *auch* als Gelb zu werten (analog zu `UnresolvedInputs`: "wir konnten die Eingabe nicht sinnvoll verwerten"), aber das ist eine Ermessensfrage — deine Entscheidung.
-2. **Soll der CLI-Parse-Fehler-Pfad (`ArgumentException` in `Program.cs`, z.B. unbekannte Option) optisch an den neuen gelben Balken angeglichen werden**, statt der bisherigen schlichten `Console.Error.WriteLine("Fehlerhafter Aufruf: ...")`-Zeile? Würde eine neue Methode `ConsoleReportPrinter.PrintUsageError(string message)` im selben Balken-Stil wie `PrintVerdict` brauchen. Aktuell funktional schon korrekt (kein ROT, `exit 1`), nur uneinheitlich in der Optik zum neuen Gelb-Fall.
-3. **Exit-Code für Gelb:** bleibt `1` (wie Rot heute), oder soll Gelb einen eigenen Code bekommen (z.B. `2`), damit ein CI-Skript "Eingabefehler" von "echtem Testfehlschlag" automatisiert unterscheiden könnte? Ohne konkreten Bedarf würde ich bei `1` bleiben (einfacher, die Pflichtanforderung verlangt nur "≠ 0") — aber sag Bescheid, falls dir das wichtig ist.
+1. **`UnreadableFiles` bleibt Rot.** Eine gefundene, aber inhaltlich kaputte Datei ist zu mehrdeutig, um sie automatisch als bloßen Bedienfehler einzustufen — bleibt beim strengeren Rot.
+2. **Ja** — der CLI-Parse-Fehler-Pfad wird optisch an den gelben Balken angeglichen (`ConsoleReportPrinter.PrintUsageError(string message)`, gleicher Balken-Stil wie `PrintVerdict`, ersetzt die bisherige `Console.Error.WriteLine`-Zeile in `Program.cs`).
+3. **Exit-Code bleibt `1`** für Gelb (wie für Rot) — kein eigener Code, da die Pflichtanforderung nur "≠ 0" verlangt.
+
+Damit zählt als **Gelb** ausschließlich `VerdictReasonKind.UnresolvedInputs` sowie der CLI-Parse-Fehler-Pfad (der gar nicht erst bis zu `GuardianVerdict` kommt). Alle anderen Rot-Gründe (`RealTestFailures`, `LoadErrors`, `ZeroTestsExecuted`, `BelowMinimumTestCount`, `UnreadableFiles`) bleiben Rot.
 
 ## Tests
 

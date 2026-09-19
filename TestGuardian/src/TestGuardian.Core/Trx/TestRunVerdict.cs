@@ -18,11 +18,23 @@ public enum VerdictReasonKind
 /// </summary>
 public sealed record VerdictReason(VerdictReasonKind Kind, string Message);
 
-public sealed record GuardianVerdict(bool IsSuccessful, IReadOnlyList<VerdictReason> Reasons);
+public enum VerdictSeverity
+{
+    Green,
+    Yellow,
+    Red
+}
+
+public sealed record GuardianVerdict(VerdictSeverity Severity, IReadOnlyList<VerdictReason> Reasons)
+{
+    // Exit-Code-Entscheidung bleibt binär: alles außer Green scheitert (siehe docs/decisions/input-warning-level.md).
+    public bool IsSuccessful => Severity == VerdictSeverity.Green;
+}
 
 /// <summary>
-/// The actual green/red decision, kept free of any console/CLI dependency so it carries the
-/// same test rigor as the rest of TestGuardian.Core (see docs/decisions/exit-code-decision.md).
+/// The actual green/yellow/red decision, kept free of any console/CLI dependency so it carries the
+/// same test rigor as the rest of TestGuardian.Core (see docs/decisions/exit-code-decision.md and
+/// docs/decisions/input-warning-level.md).
 /// </summary>
 public static class TestRunVerdict
 {
@@ -69,6 +81,23 @@ public static class TestRunVerdict
                 $"{inputResolution.UnresolvedInputs.Count} Eingabe(n) konnten nicht aufgelöst werden."));
         }
 
-        return new GuardianVerdict(reasons.Count == 0, reasons);
+        var severity = reasons.Count == 0
+            ? VerdictSeverity.Green
+            : reasons.Max(r => SeverityOf(r.Kind));
+
+        return new GuardianVerdict(severity, reasons);
     }
+
+    /// <summary>
+    /// Only <see cref="VerdictReasonKind.UnresolvedInputs"/> counts as a mere invocation/input
+    /// problem (Gelb) — everything else, including <see cref="VerdictReasonKind.UnreadableFiles"/>,
+    /// stays Rot because a file that was found but whose content is broken can just as well be a
+    /// genuinely broken test run (see "Offene Entscheidung 1" in docs/plans/input-warning-level.md).
+    /// A Rot-Grund always outranks a Gelb-Grund (enum order Green &lt; Yellow &lt; Red, combined via Max).
+    /// </summary>
+    private static VerdictSeverity SeverityOf(VerdictReasonKind kind) => kind switch
+    {
+        VerdictReasonKind.UnresolvedInputs => VerdictSeverity.Yellow,
+        _ => VerdictSeverity.Red
+    };
 }

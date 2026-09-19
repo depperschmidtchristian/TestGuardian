@@ -16,6 +16,7 @@ public class TestRunVerdictTests
         var verdict = TestRunVerdict.Evaluate(overview, NoUnresolvedInputs, minTests: null);
 
         Assert.IsTrue(verdict.IsSuccessful);
+        Assert.AreEqual(VerdictSeverity.Green, verdict.Severity);
         Assert.AreEqual(0, verdict.Reasons.Count);
     }
 
@@ -86,11 +87,13 @@ public class TestRunVerdictTests
         var verdict = TestRunVerdict.Evaluate(overview, NoUnresolvedInputs, minTests: null);
 
         Assert.IsFalse(verdict.IsSuccessful);
+        Assert.AreEqual(VerdictSeverity.Red, verdict.Severity,
+            "A file that was found but whose content is broken stays Rot, unlike an unresolved input — see docs/plans/input-warning-level.md.");
         Assert.IsTrue(verdict.Reasons.Any(r => r.Kind == VerdictReasonKind.UnreadableFiles));
     }
 
     [TestMethod]
-    public void Evaluate_UnresolvedInputPresent_IsUnsuccessful()
+    public void Evaluate_UnresolvedInputPresent_IsYellowNotRed()
     {
         var overview = AggregateSamples("lauf-d.trx"); // otherwise a clean green run
         var inputResolution = new InputResolutionResult(
@@ -100,7 +103,25 @@ public class TestRunVerdictTests
         var verdict = TestRunVerdict.Evaluate(overview, inputResolution, minTests: null);
 
         Assert.IsFalse(verdict.IsSuccessful);
+        Assert.AreEqual(VerdictSeverity.Yellow, verdict.Severity);
         Assert.IsTrue(verdict.Reasons.Any(r => r.Kind == VerdictReasonKind.UnresolvedInputs));
+    }
+
+    [TestMethod]
+    public void Evaluate_UnresolvedInputAndRealFailureCoexist_SeverityIsRed()
+    {
+        var overview = AggregateSamples("lauf-a.trx"); // real failures present
+        var inputResolution = new InputResolutionResult(
+            [],
+            [new UnresolvedInput("does-not-exist.trx", "Datei nicht gefunden.")]);
+
+        var verdict = TestRunVerdict.Evaluate(overview, inputResolution, minTests: null);
+
+        Assert.AreEqual(VerdictSeverity.Red, verdict.Severity,
+            "A real red reason must never be masked by a yellow input problem (Vorrangregel).");
+        Assert.IsTrue(verdict.Reasons.Any(r => r.Kind == VerdictReasonKind.RealTestFailures));
+        Assert.IsTrue(verdict.Reasons.Any(r => r.Kind == VerdictReasonKind.UnresolvedInputs),
+            "The yellow reason is still reported alongside the red one, it just doesn't decide the banner color.");
     }
 
     [TestMethod]

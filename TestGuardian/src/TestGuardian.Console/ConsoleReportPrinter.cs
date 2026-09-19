@@ -56,18 +56,38 @@ public static class ConsoleReportPrinter
         }
     }
 
+    /// <summary>
+    /// A malformed command line (unknown option, stray argument) is reported through this same
+    /// yellow banner style, not the red "URTEIL"-path — it is an invocation problem, not a test
+    /// result (see docs/decisions/input-warning-level.md).
+    /// </summary>
+    public static void PrintUsageError(string message)
+    {
+        PrintBanner("WARNUNG: FEHLERHAFTER AUFRUF", ConsoleColor.Yellow, [message]);
+    }
+
     private static void PrintVerdict(GuardianVerdict verdict)
     {
-        var (color, label) = verdict.IsSuccessful
-            ? (ConsoleColor.Green, "GRUEN")
-            : (ConsoleColor.Red, "ROT");
+        var (color, label) = verdict.Severity switch
+        {
+            VerdictSeverity.Green => (ConsoleColor.Green, "GRUEN"),
+            VerdictSeverity.Yellow => (ConsoleColor.Yellow, "WARNUNG"),
+            VerdictSeverity.Red => (ConsoleColor.Red, "ROT"),
+            _ => throw new ArgumentOutOfRangeException(nameof(verdict), verdict.Severity, "Unbekannte VerdictSeverity.")
+        };
+
+        PrintBanner($"URTEIL: {label}", color, verdict.Reasons.Select(r => r.Message));
+    }
+
+    private static void PrintBanner(string label, ConsoleColor color, IEnumerable<string> messages)
+    {
         var bar = new string('#', 10);
 
-        WriteLineInColor($"{bar} URTEIL: {label} {bar}", color);
+        WriteLineInColor($"{bar} {label} {bar}", color);
 
-        foreach (var reason in verdict.Reasons)
+        foreach (var message in messages)
         {
-            System.Console.WriteLine($"  - {reason.Message}");
+            System.Console.WriteLine($"  - {message}");
         }
 
         System.Console.WriteLine(new string('-', 70));

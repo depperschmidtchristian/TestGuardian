@@ -10,9 +10,9 @@ try
 }
 catch (ArgumentException ex)
 {
-    // A malformed command line is an invocation error, not a red test verdict — it must not be
-    // reported through the same "URTEIL: ROT" path a real (or unresolved) test run would use.
-    Console.Error.WriteLine($"Fehlerhafter Aufruf: {ex.Message}");
+    // A malformed command line is an invocation error, not a red test verdict — reported through
+    // the same yellow banner style as an input-warning verdict (see docs/decisions/input-warning-level.md).
+    ConsoleReportPrinter.PrintUsageError(ex.Message);
     return 1;
 }
 
