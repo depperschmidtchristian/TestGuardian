@@ -1,0 +1,92 @@
+# Plan: feature/input-warning-level
+
+Ziel: Fehlerhafte **Eingabe** in TestGuardian (falscher Pfad, Suchmuster trifft nichts, zu viele/verirrte Argumente) soll nicht mehr als "URTEIL: ROT" erscheinen — das suggeriert einen echten Testfehlschlag. Stattdessen: eine gelbe **Warnung**, die klar sagt "hier stimmt etwas an deinem Aufruf nicht", getrennt von echten roten Testergebnissen.
+
+**Wichtig, unverändert:** Der Exit-Code bleibt in jedem dieser Fälle `≠ 0`. Die Pflichtanforderung ("Ein Werkzeug, das bei kaputter Eingabe stillschweigend 'alles gut' meldet, hat denselben Fehler wie das Problem, das es lösen soll") verlangt nicht, dass es *rot* aussieht — nur, dass es nicht *grün* ist. Gelb erfüllt das, ist aber ehrlicher darüber, wo das Problem liegt.
+
+## Betroffene Fälle (Ist-Zustand heute)
+
+| Fall | Beispiel | Wo im Code | Heute |
+|---|---|---|---|
+| Unbekannte/kaputte CLI-Option | `--minTests` (Tippfehler) | `CliArgumentParser.Parse` wirft `ArgumentException`, in `Program.cs` abgefangen | Eigener Pfad: `Console.Error.WriteLine("Fehlerhafter Aufruf: ...")`, kein Verdict, `return 1`. **Läuft schon nicht durchs ROT-Banner** — siehe Commit `adb56a3`. |
+| Zu viele/verirrte Argumente (kein `--`-Präfix, z.B. `echo` aus einem verketteten PowerShell-Befehl ohne `;`) | `TestGuardian ... --min-tests 3 echo $LASTEXITCODE` | Landet in `CliOptions.Inputs`, dann `TrxInputResolver` → `UnresolvedInput` | Fließt in `GuardianVerdict` über `VerdictReasonKind.UnresolvedInputs` → **heute ROT** |
+| Falscher Pfad / Suchmuster trifft nichts | `TestGuardian C:\Tippfehler\` | `TrxInputResolver` → `UnresolvedInput` | **heute ROT** |
+| Datei existiert, aber Inhalt kaputt (fehlt, leer, unparsbares XML) | `lauf-e.trx`-Fall | `TrxFileReader`/`TrxDocumentParser` → `TrxReadFailure` → `overview.FileFailures` | **heute ROT** — siehe "Offene Entscheidung" unten |
+
+Die erste Zeile ist also schon gelöst (kein ROT-Banner, aber auch keine einheitliche Optik). Die drei anderen sollen laut deiner Anfrage von ROT auf GELB wechseln.
+
+## Domänenmodell-Änderung (`TestGuardian.Core/Trx/TestRunVerdict.cs`)
+
+`GuardianVerdict` bekommt eine dritte Stufe statt nur grün/rot:
+
+```csharp
+public enum VerdictSeverity
+{
+    Green,
+    Yellow,
+    Red
+}
+
+public sealed record GuardianVerdict(VerdictSeverity Severity, IReadOnlyList<VerdictReason> Reasons)
+{
+    // Exit-Code-Entscheidung bleibt binär: alles außer Green scheitert.
+    public bool IsSuccessful => Severity == VerdictSeverity.Green;
+}
+```
+
+`TestRunVerdict.Evaluate` sammelt Gründe wie bisher, aber in zwei Eimern statt einem:
+
+- **Rot-Gründe** (echtes Testergebnis): `RealTestFailures`, `LoadErrors`, `ZeroTestsExecuted`, `BelowMinimumTestCount`.
+- **Gelb-Gründe** (Eingabe-/Bedienproblem): `UnresolvedInputs`, und — **vorbehaltlich deiner Entscheidung unten** — `UnreadableFiles`.
+
+```csharp
+var severity =
+    redReasons.Count > 0 ? VerdictSeverity.Red :
+    yellowReasons.Count > 0 ? VerdictSeverity.Yellow :
+    VerdictSeverity.Green;
+```
+
+**Vorrangregel:** Sobald mindestens ein Rot-Grund vorliegt, ist das Gesamturteil ROT — auch wenn zusätzlich ein Gelb-Grund vorliegt (z.B. eine Datei nicht lesbar, aber eine andere zeigt einen echten Fehlschlag). Gelb-Gründe werden in dem Fall trotzdem mit ausgegeben, bestimmen aber nicht die Bannerfarbe. Ein echter Testfehlschlag darf nie durch ein Eingabeproblem "verdeckt" werden.
+
+`VerdictReasonKind` selbst bleibt unverändert (keine Kategorien-Info im Enum nötig — die Zuordnung zu Rot/Gelb passiert einmalig, zentral in `Evaluate`).
+
+## Konsolenausgabe (`TestGuardian.Console/ConsoleReportPrinter.cs`)
+
+`PrintVerdict` unterscheidet aktuell nur Grün/Rot:
+
+```csharp
+var (color, label) = verdict.IsSuccessful
+    ? (ConsoleColor.Green, "GRUEN")
+    : (ConsoleColor.Red, "ROT");
+```
+
+wird zu:
+
+```csharp
+var (color, label) = verdict.Severity switch
+{
+    VerdictSeverity.Green => (ConsoleColor.Green, "GRUEN"),
+    VerdictSeverity.Yellow => (ConsoleColor.Yellow, "WARNUNG"),
+    VerdictSeverity.Red => (ConsoleColor.Red, "ROT"),
+};
+```
+
+("WARNUNG" statt z.B. "GELB", weil es beschreibt *was* es ist, nicht nur die Farbe — konsistent mit "GRUEN"/"ROT", die auch das Urteil selbst benennen, nicht nur die Farbe.)
+
+## Offene Entscheidungen (bitte bestätigen, bevor ich das umsetze)
+
+1. **Zählt `UnreadableFiles` (Datei fehlt/leer/kaputtes XML) als Gelb oder bleibt Rot?**
+   Dein Beispiel nennt "falscher Pfad, zu viele Argumente" — das trifft eindeutig auf `UnresolvedInputs` zu. Eine Datei, die zwar gefunden wurde, deren *Inhalt* aber kaputt ist (abgeschnittenes XML, 0 Byte), könnte ebenso ein Tippfehler sein (falsche Datei erwischt) — oder aber ein echtes Symptom eines kaputten Testlaufs/CI-Envs (z.B. Prozess während des Schreibens abgestürzt). Ich tendiere dazu, das *auch* als Gelb zu werten (analog zu `UnresolvedInputs`: "wir konnten die Eingabe nicht sinnvoll verwerten"), aber das ist eine Ermessensfrage — deine Entscheidung.
+2. **Soll der CLI-Parse-Fehler-Pfad (`ArgumentException` in `Program.cs`, z.B. unbekannte Option) optisch an den neuen gelben Balken angeglichen werden**, statt der bisherigen schlichten `Console.Error.WriteLine("Fehlerhafter Aufruf: ...")`-Zeile? Würde eine neue Methode `ConsoleReportPrinter.PrintUsageError(string message)` im selben Balken-Stil wie `PrintVerdict` brauchen. Aktuell funktional schon korrekt (kein ROT, `exit 1`), nur uneinheitlich in der Optik zum neuen Gelb-Fall.
+3. **Exit-Code für Gelb:** bleibt `1` (wie Rot heute), oder soll Gelb einen eigenen Code bekommen (z.B. `2`), damit ein CI-Skript "Eingabefehler" von "echtem Testfehlschlag" automatisiert unterscheiden könnte? Ohne konkreten Bedarf würde ich bei `1` bleiben (einfacher, die Pflichtanforderung verlangt nur "≠ 0") — aber sag Bescheid, falls dir das wichtig ist.
+
+## Tests
+
+- `TestRunVerdictTests` (neu, falls noch nicht vorhanden, sonst erweitert): pro Reason-Kind ein Fall, der prüft, welche `VerdictSeverity` herauskommt — insbesondere: nur `UnresolvedInputs` → Yellow; nur `RealTestFailures` → Red; beides gleichzeitig → Red (Vorrangregel); keine Gründe → Green.
+- `ConsoleReportPrinterTests`: neuer Fall für `VerdictSeverity.Yellow` → Ausgabe enthält "WARNUNG", nicht "ROT"/"GRUEN".
+- Falls Entscheidung 2 (ja): neuer Test für `ConsoleReportPrinter.PrintUsageError`.
+
+## Nicht Teil dieses Features
+
+- Keine Änderung an der CLI-Parsing-Logik selbst (`CliArgumentParser`) — nur daran, wie ihr Fehlerfall *dargestellt* wird (falls Entscheidung 2 = ja).
+- Keine Änderung an `--min-tests`/Zählweise/LoadError-Klassifizierung — reine Präsentations-/Verdict-Kategorisierungs-Änderung.
