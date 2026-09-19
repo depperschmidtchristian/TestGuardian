@@ -75,4 +75,26 @@ public class CliArgumentParserTests
         CollectionAssert.AreEqual(new[] { "a.trx", "b.trx" }, options.Inputs.ToArray());
         Assert.AreEqual(2, options.MaxDepth);
     }
+
+    [TestMethod]
+    public void Parse_ToJsonWithValue_SetsJsonOutputPath()
+    {
+        var options = CliArgumentParser.Parse(["a.trx", "--to-json", "report.json"]);
+
+        Assert.AreEqual("report.json", options.JsonOutputPath);
+    }
+
+    [TestMethod]
+    public void Parse_ToJsonWithoutValue_Throws()
+    {
+        Assert.ThrowsException<ArgumentException>(() => CliArgumentParser.Parse(["a.trx", "--to-json"]));
+    }
+
+    [TestMethod]
+    public void Parse_WithoutToJson_JsonOutputPathIsNull()
+    {
+        var options = CliArgumentParser.Parse(["a.trx"]);
+
+        Assert.IsNull(options.JsonOutputPath);
+    }
 }

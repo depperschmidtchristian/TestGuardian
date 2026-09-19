@@ -1,5 +1,7 @@
 using TestGuardian.Core;
 using TestGuardian.Core.Input;
+using TestGuardian.Core.Json;
+using TestGuardian.Core.Json.Models;
 using TestGuardian.Core.Trx;
 using TestGuardian.Core.Trx.Models;
 using TestGuardian.Console;
@@ -9,6 +11,13 @@ CliOptions options;
 try
 {
     options = CliArgumentParser.Parse(args);
+
+    if (options.JsonOutputPath is { } requestedJsonPath)
+    {
+        // Checked as early as possible, before any .trx file is even resolved — see
+        // JsonOutputPathValidator's own doc comment for why it never opens the target itself.
+        JsonOutputPathValidator.EnsureCanCreate(requestedJsonPath);
+    }
 }
 catch (ArgumentException ex)
 {
@@ -35,5 +44,22 @@ var overview = TestRunAggregator.Aggregate(readResults);
 var verdict = TestRunVerdict.Evaluate(overview, inputResolution, options.MinTests);
 
 ConsoleReportPrinter.Print(overview, inputResolution, verdict);
+
+if (options.JsonOutputPath is { } jsonPath)
+{
+    try
+    {
+        JsonReportWriter.Write(jsonPath, new JsonReport(overview, inputResolution, verdict));
+        Console.WriteLine($"JSON-Bericht geschrieben nach: {jsonPath}");
+    }
+    catch (IOException ex)
+    {
+        // The early EnsureCanCreate check already ruled out the common cases; this only fires on
+        // a rare TOCTOU race (e.g. the file appeared in the meantime) — FileMode.CreateNew refuses
+        // to overwrite rather than risk data loss, see docs/decisions/json-output.md.
+        Console.Error.WriteLine($"JSON-Bericht konnte nicht geschrieben werden: {ex.Message}");
+        return 1;
+    }
+}
 
 return verdict.IsSuccessful ? 0 : 1;
