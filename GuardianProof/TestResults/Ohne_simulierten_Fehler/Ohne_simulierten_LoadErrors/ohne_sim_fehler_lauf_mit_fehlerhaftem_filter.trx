@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2be27a61-739b-4599-a758-e09cefb5f696" name="deppe@CRAZY4 2026-09-19 18:05:22" runUser="CRAZY4\deppe" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-19T18:05:22.8140721+02:00" queuing="2026-09-19T18:05:22.8140721+02:00" start="2026-09-19T18:05:22.5478463+02:00" finish="2026-09-19T18:05:22.8140721+02:00" />
+  <TestSettings name="default" id="e9344eb1-0fe0-476c-b597-d04efed464d0">
+    <Deployment runDeploymentRoot="deppe_CRAZY4_2026-09-19_18_05_22" />
+  </TestSettings>
+  <TestLists>
+    <TestList name="Ergebnisse nicht in einer Liste" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Alle geladenen Ergebnisse" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="0" executed="0" passed="0" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <RunInfos>
+      <RunInfo computerName="CRAZY4" outcome="Warning" timestamp="2026-09-19T18:05:22.7980549+02:00">
+        <Text>Kein Test entspricht dem angegebenen Testfallfilter "Owner=NonExistent" in "C:\Users\deppe\Desktop\TestGuardianRepo\NachtlaufDemo\x64\Debug\NachtlaufDemo.Tests.dll".</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

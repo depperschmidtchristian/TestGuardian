@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="a1f3c2d4-3333-4a01-9b10-0003aaaa0003" name="Beispiellauf Ladefehler" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-15T08:16:10.2000000+02:00" queuing="2026-09-15T08:16:10.2000000+02:00" start="2026-09-15T08:16:11.0000000+02:00" finish="2026-09-15T08:16:15.7700000+02:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="4" executed="4" passed="1" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="Wandler_Umlaute_BleibenErhalten" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000011">
+      <Execution id="10000000-0000-0000-0000-000000000011" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="WandlerTests" name="Wandler_Umlaute_BleibenErhalten" />
+    </UnitTest>
+    <UnitTest name="Dienst_Startet_Sauber" storage="dienstlib.testcpp.dll" id="00000000-0000-0000-0000-000000000012">
+      <Execution id="10000000-0000-0000-0000-000000000012" />
+      <TestMethod codeBase="dienstlib.testcpp.dll" className="DienstTests" name="Dienst_Startet_Sauber" />
+    </UnitTest>
+    <UnitTest name="Dienst_Beendet_Sauber" storage="dienstlib.testcpp.dll" id="00000000-0000-0000-0000-000000000013">
+      <Execution id="10000000-0000-0000-0000-000000000013" />
+      <TestMethod codeBase="dienstlib.testcpp.dll" className="DienstTests" name="Dienst_Beendet_Sauber" />
+    </UnitTest>
+    <UnitTest name="Dienst_Neustart_ErhaeltZustand" storage="dienstlib.testcpp.dll" id="00000000-0000-0000-0000-000000000014">
+      <Execution id="10000000-0000-0000-0000-000000000014" />
+      <TestMethod codeBase="dienstlib.testcpp.dll" className="DienstTests" name="Dienst_Neustart_ErhaeltZustand" />
+    </UnitTest>
+  </TestDefinitions>
+  <Results>
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000011" testId="00000000-0000-0000-0000-000000000011" testName="Wandler_Umlaute_BleibenErhalten" computerName="BUILD-01" duration="00:00:00.0081000" startTime="2026-09-15T08:16:11.1000000+02:00" endTime="2026-09-15T08:16:11.1081000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000012" testId="00000000-0000-0000-0000-000000000012" testName="Dienst_Startet_Sauber" computerName="BUILD-01" duration="00:00:00.0000000" startTime="2026-09-15T08:16:12.0000000+02:00" endTime="2026-09-15T08:16:12.0000000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Failed to load the test assembly or its dependencies: dienstlib.testcpp.dll</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000013" testId="00000000-0000-0000-0000-000000000013" testName="Dienst_Beendet_Sauber" computerName="BUILD-01" duration="00:00:00.0000000" startTime="2026-09-15T08:16:12.0000000+02:00" endTime="2026-09-15T08:16:12.0000000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Failed to load the test assembly or its dependencies: dienstlib.testcpp.dll</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000014" testId="00000000-0000-0000-0000-000000000014" testName="Dienst_Neustart_ErhaeltZustand" computerName="BUILD-01" duration="00:00:00.0000000" startTime="2026-09-15T08:16:12.0000000+02:00" endTime="2026-09-15T08:16:12.0000000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Failed to load the test assembly or its dependencies: dienstlib.testcpp.dll</Message>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

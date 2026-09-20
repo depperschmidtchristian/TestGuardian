@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="a1f3c2d4-2222-4a01-9b10-0002aaaa0002" name="Beispiellauf Leer" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-15T08:14:00.5000000+02:00" queuing="2026-09-15T08:14:00.5000000+02:00" start="2026-09-15T08:14:01.0000000+02:00" finish="2026-09-15T08:14:01.9900000+02:00" />
+  <ResultSummary outcome="Completed">
+    <Counters total="0" executed="0" passed="0" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <RunInfos>
+      <RunInfo computerName="BUILD-01" outcome="Warning" timestamp="2026-09-15T08:14:01.9800000+02:00">
+        <Text>Kein Test entspricht dem angegebenen Testfallfilter `Owner=Nachtlauf` in widgetlib.testcpp.dll.</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+  <TestDefinitions />
+  <Results />
+</TestRun>

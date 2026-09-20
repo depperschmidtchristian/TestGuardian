@@ -75,3 +75,11 @@ Thumbs.db
 
 secrets.json
 appsettings.*.local.json
+
+# Ausnahmen von den generischen Regeln oben ([Tt]est[Rr]esult*/, *.trx, lauf-*.trx): diese beiden
+# Ordner enthalten keine Build-Nebenprodukte, sondern tatsaechlich benoetigte/abzugebende Dateien -
+# die Beispieldaten, die dotnet test zur Laufzeit liest (SampleData.PathTo), und die Teil-B-
+# Beweislaeufe (Lauf 1/Lauf 2). Ohne diese Ausnahmen wuerden beide nie ins Repo gelangen.
+!Fixtures/Sample Data/*.trx
+!GuardianProof/TestResults/
+!GuardianProof/TestResults/**

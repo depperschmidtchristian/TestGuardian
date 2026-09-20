@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="a1f3c2d4-4444-4a01-9b10-0004aaaa0004" name="Beispiellauf Gruen" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-15T08:20:00.1000000+02:00" queuing="2026-09-15T08:20:00.1000000+02:00" start="2026-09-15T08:20:01.0000000+02:00" finish="2026-09-15T08:20:03.3300000+02:00" />
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="Ablauf_Standard_Funktioniert" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000021">
+      <Execution id="10000000-0000-0000-0000-000000000021" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="AblaufTests" name="Ablauf_Standard_Funktioniert" />
+    </UnitTest>
+    <UnitTest name="Ablauf_Grenzwert_Funktioniert" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000022">
+      <Execution id="10000000-0000-0000-0000-000000000022" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="AblaufTests" name="Ablauf_Grenzwert_Funktioniert" />
+    </UnitTest>
+    <UnitTest name="Ablauf_Abbruch_Funktioniert" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000023">
+      <Execution id="10000000-0000-0000-0000-000000000023" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="AblaufTests" name="Ablauf_Abbruch_Funktioniert" />
+    </UnitTest>
+  </TestDefinitions>
+  <Results>
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000021" testId="00000000-0000-0000-0000-000000000021" testName="Ablauf_Standard_Funktioniert" computerName="BUILD-01" duration="00:00:00.0142000" startTime="2026-09-15T08:20:01.1000000+02:00" endTime="2026-09-15T08:20:01.1142000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000022" testId="00000000-0000-0000-0000-000000000022" testName="Ablauf_Grenzwert_Funktioniert" computerName="BUILD-01" duration="00:00:00.0233000" startTime="2026-09-15T08:20:01.2000000+02:00" endTime="2026-09-15T08:20:01.2233000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000023" testId="00000000-0000-0000-0000-000000000023" testName="Ablauf_Abbruch_Funktioniert" computerName="BUILD-01" duration="00:00:00.0188000" startTime="2026-09-15T08:20:01.3000000+02:00" endTime="2026-09-15T08:20:01.3188000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </Results>
+</TestRun>

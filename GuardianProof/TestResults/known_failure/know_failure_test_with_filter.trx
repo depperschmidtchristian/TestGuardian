@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="750609dd-c382-4876-9f4a-881be9ed9b14" name="deppe@CRAZY4 2026-09-20 13:48:23" runUser="CRAZY4\deppe" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-20T13:48:23.5483688+02:00" queuing="2026-09-20T13:48:23.5483688+02:00" start="2026-09-20T13:48:23.2042144+02:00" finish="2026-09-20T13:48:23.5719849+02:00" />
+  <TestSettings name="default" id="ba7f0011-a92f-4af3-9d80-164c5ee658ca">
+    <Deployment runDeploymentRoot="deppe_CRAZY4_2026-09-20_13_48_23" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="bafefbee-21a3-4c68-a88f-4f5d3516a9b1" testId="50ff1deb-f2c7-4da4-bfd2-9b01eed4f63d" testName="Test_Divide_with_Owner" computerName="CRAZY4" duration="00:00:00.0000024" startTime="2026-09-20T13:48:23.5300945+02:00" endTime="2026-09-20T13:48:23.5300969+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bafefbee-21a3-4c68-a88f-4f5d3516a9b1" />
+    <UnitTestResult executionId="9457e2ce-a2d4-49a5-8a43-cade87ac04aa" testId="65c06e9c-8970-a44a-03c2-e221d45cef45" testName="Test_Multiply_with_Owner" computerName="CRAZY4" duration="00:00:00.0000061" startTime="2026-09-20T13:48:23.5235907+02:00" endTime="2026-09-20T13:48:23.5235968+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9457e2ce-a2d4-49a5-8a43-cade87ac04aa" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Test_Divide_with_Owner" storage="c:\users\deppe\desktop\testguardianrepo\guardianproof\x64\debug\guardianproof.tests.dll" id="50ff1deb-f2c7-4da4-bfd2-9b01eed4f63d">
+      <Owners>
+        <Owner name="Nachtlauf" />
+      </Owners>
+      <Execution id="bafefbee-21a3-4c68-a88f-4f5d3516a9b1" />
+      <TestMethod codeBase="C:\Users\deppe\Desktop\TestGuardianRepo\GuardianProof\x64\Debug\GuardianProof.Tests.dll" adapterTypeName="executor://cppunittestexecutor/v1" className="NachtlaufDemoTests.NachtlaufDemoTests" name="NachtlaufDemoTests::NachtlaufDemoTests::Test_Divide_with_Owner" />
+    </UnitTest>
+    <UnitTest name="Test_Multiply_with_Owner" storage="c:\users\deppe\desktop\testguardianrepo\guardianproof\x64\debug\guardianproof.tests.dll" id="65c06e9c-8970-a44a-03c2-e221d45cef45">
+      <Owners>
+        <Owner name="Nachtlauf" />
+      </Owners>
+      <Execution id="9457e2ce-a2d4-49a5-8a43-cade87ac04aa" />
+      <TestMethod codeBase="C:\Users\deppe\Desktop\TestGuardianRepo\GuardianProof\x64\Debug\GuardianProof.Tests.dll" adapterTypeName="executor://cppunittestexecutor/v1" className="NachtlaufDemoTests.NachtlaufDemoTests" name="NachtlaufDemoTests::NachtlaufDemoTests::Test_Multiply_with_Owner" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="50ff1deb-f2c7-4da4-bfd2-9b01eed4f63d" executionId="bafefbee-21a3-4c68-a88f-4f5d3516a9b1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="65c06e9c-8970-a44a-03c2-e221d45cef45" executionId="9457e2ce-a2d4-49a5-8a43-cade87ac04aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Ergebnisse nicht in einer Liste" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Alle geladenen Ergebnisse" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+</TestRun>

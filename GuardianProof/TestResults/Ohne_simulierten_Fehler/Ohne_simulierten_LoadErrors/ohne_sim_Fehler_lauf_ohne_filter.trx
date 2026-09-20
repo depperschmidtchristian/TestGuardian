@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="418fa6ac-c046-4711-9c9c-178b1cd6e0bc" name="deppe@CRAZY4 2026-09-19 18:04:54" runUser="CRAZY4\deppe" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-19T18:04:54.2765143+02:00" queuing="2026-09-19T18:04:54.2765143+02:00" start="2026-09-19T18:04:54.0335134+02:00" finish="2026-09-19T18:04:54.2972301+02:00" />
+  <TestSettings name="default" id="ff21c795-68bb-4fec-a91b-be3c08a67550">
+    <Deployment runDeploymentRoot="deppe_CRAZY4_2026-09-19_18_04_54" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="a12769fb-a1c2-4174-8dcf-9918907ad28e" testId="11c12d94-8716-4446-9101-238497f9d997" testName="Test_Divide_with_Owner" computerName="CRAZY4" duration="00:00:00.0000013" startTime="2026-09-19T18:04:54.2625138+02:00" endTime="2026-09-19T18:04:54.2625151+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a12769fb-a1c2-4174-8dcf-9918907ad28e" />
+    <UnitTestResult executionId="a783c3a2-f91f-4a34-9ff1-bf7a9eddd91b" testId="2b7db7b3-341a-5a99-b3f8-d820afe187d7" testName="Test_Add_without_Owner" computerName="CRAZY4" duration="00:00:00.0000037" startTime="2026-09-19T18:04:54.2565187+02:00" endTime="2026-09-19T18:04:54.2565224+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a783c3a2-f91f-4a34-9ff1-bf7a9eddd91b" />
+    <UnitTestResult executionId="4b616fb9-1d15-4f9e-9670-d1f8977aab5d" testId="9374d704-2f4b-12aa-3245-c6a0e5bb2dfb" testName="Test_Subtract_without_Owner" computerName="CRAZY4" duration="00:00:00.0000020" startTime="2026-09-19T18:04:54.2625138+02:00" endTime="2026-09-19T18:04:54.2625158+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4b616fb9-1d15-4f9e-9670-d1f8977aab5d" />
+    <UnitTestResult executionId="19c16e54-fd70-49be-a53b-ce155fadb6c2" testId="0effd61c-4105-9682-55b2-786fd7828774" testName="Test_Multiply_without_Owner" computerName="CRAZY4" duration="00:00:00.0000015" startTime="2026-09-19T18:04:54.2625138+02:00" endTime="2026-09-19T18:04:54.2625153+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="19c16e54-fd70-49be-a53b-ce155fadb6c2" />
+    <UnitTestResult executionId="ed47ebb9-b9d6-4c8f-bd7c-6f98c0863d47" testId="37f230e3-29c8-6318-b91e-eb49527af5c4" testName="Test_Multiply_with_Owner" computerName="CRAZY4" duration="00:00:00.0000013" startTime="2026-09-19T18:04:54.2625138+02:00" endTime="2026-09-19T18:04:54.2625151+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ed47ebb9-b9d6-4c8f-bd7c-6f98c0863d47" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Test_Divide_with_Owner" storage="c:\users\deppe\desktop\testguardianrepo\nachtlaufdemo\x64\debug\nachtlaufdemo.tests.dll" id="11c12d94-8716-4446-9101-238497f9d997">
+      <Owners>
+        <Owner name="Nachtlauf" />
+      </Owners>
+      <Execution id="a12769fb-a1c2-4174-8dcf-9918907ad28e" />
+      <TestMethod codeBase="C:\Users\deppe\Desktop\TestGuardianRepo\NachtlaufDemo\x64\Debug\NachtlaufDemo.Tests.dll" adapterTypeName="executor://cppunittestexecutor/v1" className="NachtlaufDemoTests.NachtlaufDemoTests" name="NachtlaufDemoTests::NachtlaufDemoTests::Test_Divide_with_Owner" />
+    </UnitTest>
+    <UnitTest name="Test_Multiply_with_Owner" storage="c:\users\deppe\desktop\testguardianrepo\nachtlaufdemo\x64\debug\nachtlaufdemo.tests.dll" id="37f230e3-29c8-6318-b91e-eb49527af5c4">
+      <Owners>
+        <Owner name="Nachtlauf" />
+      </Owners>
+      <Execution id="ed47ebb9-b9d6-4c8f-bd7c-6f98c0863d47" />
+      <TestMethod codeBase="C:\Users\deppe\Desktop\TestGuardianRepo\NachtlaufDemo\x64\Debug\NachtlaufDemo.Tests.dll" adapterTypeName="executor://cppunittestexecutor/v1" className="NachtlaufDemoTests.NachtlaufDemoTests" name="NachtlaufDemoTests::NachtlaufDemoTests::Test_Multiply_with_Owner" />
+    </UnitTest>
+    <UnitTest name="Test_Multiply_without_Owner" storage="c:\users\deppe\desktop\testguardianrepo\nachtlaufdemo\x64\debug\nachtlaufdemo.tests.dll" id="0effd61c-4105-9682-55b2-786fd7828774">
+      <Execution id="19c16e54-fd70-49be-a53b-ce155fadb6c2" />
+      <TestMethod codeBase="C:\Users\deppe\Desktop\TestGuardianRepo\NachtlaufDemo\x64\Debug\NachtlaufDemo.Tests.dll" adapterTypeName="executor://cppunittestexecutor/v1" className="NachtlaufDemoTests.NachtlaufDemoTests" name="NachtlaufDemoTests::NachtlaufDemoTests::Test_Multiply_without_Owner" />
+    </UnitTest>
+    <UnitTest name="Test_Subtract_without_Owner" storage="c:\users\deppe\desktop\testguardianrepo\nachtlaufdemo\x64\debug\nachtlaufdemo.tests.dll" id="9374d704-2f4b-12aa-3245-c6a0e5bb2dfb">
+      <Execution id="4b616fb9-1d15-4f9e-9670-d1f8977aab5d" />
+      <TestMethod codeBase="C:\Users\deppe\Desktop\TestGuardianRepo\NachtlaufDemo\x64\Debug\NachtlaufDemo.Tests.dll" adapterTypeName="executor://cppunittestexecutor/v1" className="NachtlaufDemoTests.NachtlaufDemoTests" name="NachtlaufDemoTests::NachtlaufDemoTests::Test_Subtract_without_Owner" />
+    </UnitTest>
+    <UnitTest name="Test_Add_without_Owner" storage="c:\users\deppe\desktop\testguardianrepo\nachtlaufdemo\x64\debug\nachtlaufdemo.tests.dll" id="2b7db7b3-341a-5a99-b3f8-d820afe187d7">
+      <Execution id="a783c3a2-f91f-4a34-9ff1-bf7a9eddd91b" />
+      <TestMethod codeBase="C:\Users\deppe\Desktop\TestGuardianRepo\NachtlaufDemo\x64\Debug\NachtlaufDemo.Tests.dll" adapterTypeName="executor://cppunittestexecutor/v1" className="NachtlaufDemoTests.NachtlaufDemoTests" name="NachtlaufDemoTests::NachtlaufDemoTests::Test_Add_without_Owner" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="11c12d94-8716-4446-9101-238497f9d997" executionId="a12769fb-a1c2-4174-8dcf-9918907ad28e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2b7db7b3-341a-5a99-b3f8-d820afe187d7" executionId="a783c3a2-f91f-4a34-9ff1-bf7a9eddd91b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9374d704-2f4b-12aa-3245-c6a0e5bb2dfb" executionId="4b616fb9-1d15-4f9e-9670-d1f8977aab5d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0effd61c-4105-9682-55b2-786fd7828774" executionId="19c16e54-fd70-49be-a53b-ce155fadb6c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="37f230e3-29c8-6318-b91e-eb49527af5c4" executionId="ed47ebb9-b9d6-4c8f-bd7c-6f98c0863d47" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Ergebnisse nicht in einer Liste" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Alle geladenen Ergebnisse" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,173 @@
+{
+  "overview": {
+    "assemblies": [
+      {
+        "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+        "testCases": [
+          {
+            "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+            "testName": "Test_Subtract_without_Owner",
+            "outcome": "Passed",
+            "rawOutcome": "Passed",
+            "errorMessage": null
+          },
+          {
+            "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+            "testName": "Test_Add_without_Owner",
+            "outcome": "Passed",
+            "rawOutcome": "Passed",
+            "errorMessage": null
+          },
+          {
+            "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+            "testName": "Test_Divide_with_Owner",
+            "outcome": "Passed",
+            "rawOutcome": "Passed",
+            "errorMessage": null
+          },
+          {
+            "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+            "testName": "Test_RequiresLicensedFeature",
+            "outcome": "Failed",
+            "rawOutcome": "Failed",
+            "errorMessage": "Assert failed. Dieser Test braucht eine Lizenz/Hardware, die hier nicht verfuegbar ist."
+          },
+          {
+            "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+            "testName": "Test_Multiply_with_Owner",
+            "outcome": "Passed",
+            "rawOutcome": "Passed",
+            "errorMessage": null
+          },
+          {
+            "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+            "testName": "Test_RequiresInstalledProgram",
+            "outcome": "Failed",
+            "rawOutcome": "Failed",
+            "errorMessage": "Assert failed. Programm xyz ist nicht installiert."
+          },
+          {
+            "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+            "testName": "Test_Multiply_without_Owner",
+            "outcome": "Passed",
+            "rawOutcome": "Passed",
+            "errorMessage": null
+          }
+        ],
+        "passed": 5,
+        "failed": 2,
+        "loadError": 0,
+        "skipped": 0,
+        "other": 0,
+        "total": 7,
+        "attempted": 7,
+        "correctlyExecuted": 7
+      }
+    ],
+    "fileFailures": [],
+    "warnings": [],
+    "total": {
+      "assemblyName": "Gesamt",
+      "testCases": [
+        {
+          "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+          "testName": "Test_Subtract_without_Owner",
+          "outcome": "Passed",
+          "rawOutcome": "Passed",
+          "errorMessage": null
+        },
+        {
+          "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+          "testName": "Test_Add_without_Owner",
+          "outcome": "Passed",
+          "rawOutcome": "Passed",
+          "errorMessage": null
+        },
+        {
+          "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+          "testName": "Test_Divide_with_Owner",
+          "outcome": "Passed",
+          "rawOutcome": "Passed",
+          "errorMessage": null
+        },
+        {
+          "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+          "testName": "Test_RequiresLicensedFeature",
+          "outcome": "Failed",
+          "rawOutcome": "Failed",
+          "errorMessage": "Assert failed. Dieser Test braucht eine Lizenz/Hardware, die hier nicht verfuegbar ist."
+        },
+        {
+          "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+          "testName": "Test_Multiply_with_Owner",
+          "outcome": "Passed",
+          "rawOutcome": "Passed",
+          "errorMessage": null
+        },
+        {
+          "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+          "testName": "Test_RequiresInstalledProgram",
+          "outcome": "Failed",
+          "rawOutcome": "Failed",
+          "errorMessage": "Assert failed. Programm xyz ist nicht installiert."
+        },
+        {
+          "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+          "testName": "Test_Multiply_without_Owner",
+          "outcome": "Passed",
+          "rawOutcome": "Passed",
+          "errorMessage": null
+        }
+      ],
+      "passed": 5,
+      "failed": 2,
+      "loadError": 0,
+      "skipped": 0,
+      "other": 0,
+      "total": 7,
+      "attempted": 7,
+      "correctlyExecuted": 7
+    }
+  },
+  "inputResolution": {
+    "resolvedFilePaths": [
+      "C:\\Users\\deppe\\Desktop\\TestGuardianRepo\\GuardianProof\\TestResults\\known_failure\\know_failure_test.trx"
+    ],
+    "unresolvedInputs": []
+  },
+  "verdict": {
+    "severity": "Green",
+    "reasons": [],
+    "toleratedFailures": [
+      {
+        "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+        "testName": "Test_RequiresLicensedFeature",
+        "outcome": "Failed"
+      },
+      {
+        "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+        "testName": "Test_RequiresInstalledProgram",
+        "outcome": "Failed"
+      }
+    ],
+    "isSuccessful": true
+  },
+  "generatedAt": "2026-09-20T14:05:20.6079269+02:00",
+  "baselineComparison": {
+    "baselineGeneratedAt": "2026-09-20T13:55:10.3177481+02:00",
+    "newlyFailed": [],
+    "alreadyFailingInBaseline": [
+      {
+        "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+        "testName": "Test_RequiresLicensedFeature",
+        "outcome": "Failed"
+      },
+      {
+        "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+        "testName": "Test_RequiresInstalledProgram",
+        "outcome": "Failed"
+      }
+    ],
+    "fixedSinceBaseline": []
+  }
+}

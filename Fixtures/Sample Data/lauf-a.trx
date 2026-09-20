@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="a1f3c2d4-1111-4a01-9b10-0001aaaa0001" name="Beispiellauf Gemischt" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-15T08:12:03.1120000+02:00" queuing="2026-09-15T08:12:03.1120000+02:00" start="2026-09-15T08:12:04.0010000+02:00" finish="2026-09-15T08:12:11.4420000+02:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="7" executed="7" passed="4" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="Pfad_Standard_Liefert_Basisverzeichnis" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000001">
+      <Execution id="10000000-0000-0000-0000-000000000001" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="PfadTests" name="Pfad_Standard_Liefert_Basisverzeichnis" />
+    </UnitTest>
+    <UnitTest name="Pfad_LeererName_WirftFehler" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000002">
+      <Execution id="10000000-0000-0000-0000-000000000002" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="PfadTests" name="Pfad_LeererName_WirftFehler" />
+    </UnitTest>
+    <UnitTest name="Pfad_UncPfad_WirdErkannt" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000003">
+      <Execution id="10000000-0000-0000-0000-000000000003" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="PfadTests" name="Pfad_UncPfad_WirdErkannt" />
+    </UnitTest>
+    <UnitTest name="Puffer_Ueberlauf_WirdAbgefangen" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000004">
+      <Execution id="10000000-0000-0000-0000-000000000004" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="PufferTests" name="Puffer_Ueberlauf_WirdAbgefangen" />
+    </UnitTest>
+    <UnitTest name="Puffer_Nullzeiger_WirdAbgefangen" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000005">
+      <Execution id="10000000-0000-0000-0000-000000000005" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="PufferTests" name="Puffer_Nullzeiger_WirdAbgefangen" />
+    </UnitTest>
+    <UnitTest name="Wandler_Umlaute_BleibenErhalten" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000006">
+      <Execution id="10000000-0000-0000-0000-000000000006" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="WandlerTests" name="Wandler_Umlaute_BleibenErhalten" />
+    </UnitTest>
+    <UnitTest name="Wandler_LeereEingabe_LiefertLeer" storage="widgetlib.testcpp.dll" id="00000000-0000-0000-0000-000000000007">
+      <Execution id="10000000-0000-0000-0000-000000000007" />
+      <TestMethod codeBase="widgetlib.testcpp.dll" className="WandlerTests" name="Wandler_LeereEingabe_LiefertLeer" />
+    </UnitTest>
+  </TestDefinitions>
+  <Results>
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000001" testId="00000000-0000-0000-0000-000000000001" testName="Pfad_Standard_Liefert_Basisverzeichnis" computerName="BUILD-01" duration="00:00:00.0312000" startTime="2026-09-15T08:12:04.1000000+02:00" endTime="2026-09-15T08:12:04.1312000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000002" testId="00000000-0000-0000-0000-000000000002" testName="Pfad_LeererName_WirftFehler" computerName="BUILD-01" duration="00:00:00.0128000" startTime="2026-09-15T08:12:04.2000000+02:00" endTime="2026-09-15T08:12:04.2128000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000003" testId="00000000-0000-0000-0000-000000000003" testName="Pfad_UncPfad_WirdErkannt" computerName="BUILD-01" duration="00:00:00.0455000" startTime="2026-09-15T08:12:04.3000000+02:00" endTime="2026-09-15T08:12:04.3455000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert failed. Erwartet: &lt;true&gt; Tatsaechlich: &lt;false&gt;</Message>
+          <StackTrace>  at PfadTests::Pfad_UncPfad_WirdErkannt() in pfadtests.cpp:line 61</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000004" testId="00000000-0000-0000-0000-000000000004" testName="Puffer_Ueberlauf_WirdAbgefangen" computerName="BUILD-01" duration="00:00:00.0099000" startTime="2026-09-15T08:12:04.4000000+02:00" endTime="2026-09-15T08:12:04.4099000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000005" testId="00000000-0000-0000-0000-000000000005" testName="Puffer_Nullzeiger_WirdAbgefangen" computerName="BUILD-01" duration="00:00:00.0201000" startTime="2026-09-15T08:12:04.5000000+02:00" endTime="2026-09-15T08:12:04.5201000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Zugriffsverletzung beim Lesen an Adresse 0x00000000.</Message>
+          <StackTrace>  at PufferTests::Puffer_Nullzeiger_WirdAbgefangen() in puffertests.cpp:line 34</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000006" testId="00000000-0000-0000-0000-000000000006" testName="Wandler_Umlaute_BleibenErhalten" computerName="BUILD-01" duration="00:00:00.0077000" startTime="2026-09-15T08:12:04.6000000+02:00" endTime="2026-09-15T08:12:04.6077000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <UnitTestResult executionId="10000000-0000-0000-0000-000000000007" testId="00000000-0000-0000-0000-000000000007" testName="Wandler_LeereEingabe_LiefertLeer" computerName="BUILD-01" duration="00:00:00.0064000" startTime="2026-09-15T08:12:04.7000000+02:00" endTime="2026-09-15T08:12:04.7064000+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert failed. Erwartet: &lt;&gt; Tatsaechlich: &lt;\0&gt;</Message>
+          <StackTrace>  at WandlerTests::Wandler_LeereEingabe_LiefertLeer() in wandlertests.cpp:line 18</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

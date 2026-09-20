@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="203ff21a-06b6-4a37-8e93-2603eddbaad6" name="deppe@CRAZY4 2026-09-19 17:31:29" runUser="CRAZY4\deppe" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-09-19T17:31:29.7650888+02:00" queuing="2026-09-19T17:31:29.7650888+02:00" start="2026-09-19T17:31:29.3945540+02:00" finish="2026-09-19T17:31:29.7963223+02:00" />
+  <TestSettings name="default" id="b637095b-deeb-4941-baa2-868ba69f4c6c">
+    <Deployment runDeploymentRoot="deppe_CRAZY4_2026-09-19_17_31_29" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="995f9961-b78b-456b-93c9-105eae16d51c" testId="8c68917b-17a5-72ed-5d45-3b95606776e5" testName="Test_DivideModulo_with_Owner" computerName="CRAZY4" duration="00:00:00.0855388" startTime="2026-09-19T17:31:29.6701996+02:00" endTime="2026-09-19T17:31:29.7557384+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="995f9961-b78b-456b-93c9-105eae16d51c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert failed</Message>
+          <StackTrace>	at NachtlaufDemoTests::NachtlaufDemoTests::Test_DivideModulo_with_Owner() in C:\Users\deppe\Desktop\TestGuardianRepo\NachtlaufDemo\NachtlaufDemo.Tests\NachtlaufTests.cpp:line 86</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4dc7b68f-9285-41fc-aa8d-611fd14f14cc" testId="11c12d94-8716-4446-9101-238497f9d997" testName="Test_Divide_with_Owner" computerName="CRAZY4" duration="00:00:00.0000023" startTime="2026-09-19T17:31:29.6701996+02:00" endTime="2026-09-19T17:31:29.6702019+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4dc7b68f-9285-41fc-aa8d-611fd14f14cc" />
+    <UnitTestResult executionId="8db29e3d-1f76-4613-a3ef-f1af6fad21d3" testId="37f230e3-29c8-6318-b91e-eb49527af5c4" testName="Test_Multiply_with_Owner" computerName="CRAZY4" duration="00:00:00.0000041" startTime="2026-09-19T17:31:29.6548212+02:00" endTime="2026-09-19T17:31:29.6548253+02:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8db29e3d-1f76-4613-a3ef-f1af6fad21d3" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Test_DivideModulo_with_Owner" storage="c:\users\deppe\desktop\testguardianrepo\nachtlaufdemo\x64\debug\nachtlaufdemo.tests.dll" id="8c68917b-17a5-72ed-5d45-3b95606776e5">
+      <Owners>
+        <Owner name="Nachtlauf" />
+      </Owners>
+      <Execution id="995f9961-b78b-456b-93c9-105eae16d51c" />
+      <TestMethod codeBase="C:\Users\deppe\Desktop\TestGuardianRepo\NachtlaufDemo\x64\Debug\NachtlaufDemo.Tests.dll" adapterTypeName="executor://cppunittestexecutor/v1" className="NachtlaufDemoTests.NachtlaufDemoTests" name="NachtlaufDemoTests::NachtlaufDemoTests::Test_DivideModulo_with_Owner" />
+    </UnitTest>
+    <UnitTest name="Test_Divide_with_Owner" storage="c:\users\deppe\desktop\testguardianrepo\nachtlaufdemo\x64\debug\nachtlaufdemo.tests.dll" id="11c12d94-8716-4446-9101-238497f9d997">
+      <Owners>
+        <Owner name="Nachtlauf" />
+      </Owners>
+      <Execution id="4dc7b68f-9285-41fc-aa8d-611fd14f14cc" />
+      <TestMethod codeBase="C:\Users\deppe\Desktop\TestGuardianRepo\NachtlaufDemo\x64\Debug\NachtlaufDemo.Tests.dll" adapterTypeName="executor://cppunittestexecutor/v1" className="NachtlaufDemoTests.NachtlaufDemoTests" name="NachtlaufDemoTests::NachtlaufDemoTests::Test_Divide_with_Owner" />
+    </UnitTest>
+    <UnitTest name="Test_Multiply_with_Owner" storage="c:\users\deppe\desktop\testguardianrepo\nachtlaufdemo\x64\debug\nachtlaufdemo.tests.dll" id="37f230e3-29c8-6318-b91e-eb49527af5c4">
+      <Owners>
+        <Owner name="Nachtlauf" />
+      </Owners>
+      <Execution id="8db29e3d-1f76-4613-a3ef-f1af6fad21d3" />
+      <TestMethod codeBase="C:\Users\deppe\Desktop\TestGuardianRepo\NachtlaufDemo\x64\Debug\NachtlaufDemo.Tests.dll" adapterTypeName="executor://cppunittestexecutor/v1" className="NachtlaufDemoTests.NachtlaufDemoTests" name="NachtlaufDemoTests::NachtlaufDemoTests::Test_Multiply_with_Owner" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="8c68917b-17a5-72ed-5d45-3b95606776e5" executionId="995f9961-b78b-456b-93c9-105eae16d51c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="11c12d94-8716-4446-9101-238497f9d997" executionId="4dc7b68f-9285-41fc-aa8d-611fd14f14cc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="37f230e3-29c8-6318-b91e-eb49527af5c4" executionId="8db29e3d-1f76-4613-a3ef-f1af6fad21d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Ergebnisse nicht in einer Liste" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Alle geladenen Ergebnisse" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="2" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+</TestRun>

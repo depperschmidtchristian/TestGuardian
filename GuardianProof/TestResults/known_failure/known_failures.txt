@@ -1,0 +1,8 @@
+# Kommentare möglich
+
+
+Test_RequiresLicensedFeature
+# Dieser bekannter Fehler: Dieser Test braucht eine Lizenz/Hardware, die hier nicht verfuegbar ist.
+
+Test_RequiresInstalledProgram
+# Dieser bekannter Fehler: Programm xyz ist nicht installiert.

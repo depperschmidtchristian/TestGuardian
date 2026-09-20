@@ -1,0 +1,92 @@
+{
+  "overview": {
+    "assemblies": [
+      {
+        "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+        "testCases": [
+          {
+            "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+            "testName": "Test_Divide_with_Owner",
+            "outcome": "Passed",
+            "rawOutcome": "Passed",
+            "errorMessage": null
+          },
+          {
+            "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+            "testName": "Test_Multiply_with_Owner",
+            "outcome": "Passed",
+            "rawOutcome": "Passed",
+            "errorMessage": null
+          }
+        ],
+        "passed": 2,
+        "failed": 0,
+        "loadError": 0,
+        "skipped": 0,
+        "other": 0,
+        "total": 2,
+        "attempted": 2,
+        "correctlyExecuted": 2
+      }
+    ],
+    "fileFailures": [],
+    "warnings": [],
+    "total": {
+      "assemblyName": "Gesamt",
+      "testCases": [
+        {
+          "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+          "testName": "Test_Divide_with_Owner",
+          "outcome": "Passed",
+          "rawOutcome": "Passed",
+          "errorMessage": null
+        },
+        {
+          "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+          "testName": "Test_Multiply_with_Owner",
+          "outcome": "Passed",
+          "rawOutcome": "Passed",
+          "errorMessage": null
+        }
+      ],
+      "passed": 2,
+      "failed": 0,
+      "loadError": 0,
+      "skipped": 0,
+      "other": 0,
+      "total": 2,
+      "attempted": 2,
+      "correctlyExecuted": 2
+    }
+  },
+  "inputResolution": {
+    "resolvedFilePaths": [
+      "C:\\Users\\deppe\\Desktop\\TestGuardianRepo\\GuardianProof\\TestResults\\known_failure\\know_failure_test_with_filter.trx"
+    ],
+    "unresolvedInputs": []
+  },
+  "verdict": {
+    "severity": "Green",
+    "reasons": [],
+    "toleratedFailures": [],
+    "isSuccessful": true
+  },
+  "generatedAt": "2026-09-20T14:00:25.4202927+02:00",
+  "baselineComparison": {
+    "baselineGeneratedAt": "2026-09-20T13:55:10.3177481+02:00",
+    "newlyFailed": [],
+    "alreadyFailingInBaseline": [],
+    "fixedSinceBaseline": [
+      {
+        "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+        "testName": "Test_RequiresLicensedFeature",
+        "outcome": "Failed"
+      },
+      {
+        "assemblyName": "c:\\users\\deppe\\desktop\\testguardianrepo\\guardianproof\\x64\\debug\\guardianproof.tests.dll",
+        "testName": "Test_RequiresInstalledProgram",
+        "outcome": "Failed"
+      }
+    ]
+  }
+}
