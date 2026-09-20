@@ -10,6 +10,23 @@ namespace TestGuardian.Console;
 /// </summary>
 public static class JsonOutputPathValidator
 {
+    /// <summary>
+    /// Used when <c>--to-json</c> is given without an explicit path: counts up from 1 until it
+    /// finds a name not already taken in <paramref name="directory"/> — never touches any file,
+    /// same "existence check only" rule as <see cref="EnsureCanCreate"/>.
+    /// </summary>
+    public static string GenerateDefaultPath(string directory)
+    {
+        for (var n = 1; ; n++)
+        {
+            var candidate = Path.Combine(directory, $"testguardian_report_{n}.json");
+            if (!File.Exists(candidate))
+            {
+                return candidate;
+            }
+        }
+    }
+
     public static void EnsureCanCreate(string path)
     {
         if (File.Exists(path))

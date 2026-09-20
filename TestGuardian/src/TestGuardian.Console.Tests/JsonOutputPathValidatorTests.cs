@@ -47,4 +47,31 @@ public class JsonOutputPathValidatorTests
 
         Assert.ThrowsException<ArgumentException>(() => JsonOutputPathValidator.EnsureCanCreate(path));
     }
+
+    [TestMethod]
+    public void GenerateDefaultPath_NoExistingReportInDirectory_UsesNumberOne()
+    {
+        var path = JsonOutputPathValidator.GenerateDefaultPath(_tempRoot);
+
+        Assert.AreEqual(Path.Combine(_tempRoot, "testguardian_report_1.json"), path);
+    }
+
+    [TestMethod]
+    public void GenerateDefaultPath_SomeNumbersAlreadyTaken_SkipsToFirstFreeOne()
+    {
+        File.WriteAllText(Path.Combine(_tempRoot, "testguardian_report_1.json"), "taken");
+        File.WriteAllText(Path.Combine(_tempRoot, "testguardian_report_2.json"), "taken");
+
+        var path = JsonOutputPathValidator.GenerateDefaultPath(_tempRoot);
+
+        Assert.AreEqual(Path.Combine(_tempRoot, "testguardian_report_3.json"), path);
+    }
+
+    [TestMethod]
+    public void GenerateDefaultPath_ReturnedPathDoesNotExistYet()
+    {
+        var path = JsonOutputPathValidator.GenerateDefaultPath(_tempRoot);
+
+        Assert.IsFalse(File.Exists(path), "Must only pick a free name, never create the file itself.");
+    }
 }

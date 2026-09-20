@@ -30,9 +30,19 @@ Nach Rückfrage bestätigt: "Overview" meinte den gesamten Output. `JsonReport` 
 
 `JsonOutputPathValidator` ist reine CLI-Vorab-Validierung (wie `CliArgumentParser` selbst) — sie kennt gar keinen `JsonReport`, keine Testdaten, nichts Fachliches. Nur der eigentliche Schreibvorgang (`JsonReportWriter`, der den fertigen `JsonReport` kennt) gehört fachlich zu Core, analog zu `TrxFileReader`.
 
+## Nachbesserung: `--to-json` ohne Pfad → Default-Name im aktuellen Verzeichnis
+
+Auf Wunsch: `--to-json` ganz ohne Wert (Schalter ist letztes Argument, oder direkt von einer weiteren Option gefolgt) verwendet jetzt einen generierten Namen `testguardian_report_<n>.json` im aktuellen Arbeitsverzeichnis, statt wie zuvor eine `ArgumentException` zu werfen. `<n>` zählt ab 1 hoch, bis ein noch nicht belegter Name gefunden ist — auch hier gilt dieselbe Regel wie überall in diesem Feature: nur `File.Exists` prüfen, nie eine Datei anfassen (`JsonOutputPathValidator.GenerateDefaultPath`).
+
+**Warum zwei Felder (`JsonOutputRequested` + `JsonOutputPath`) statt weiterhin nur einem `string?`:** Mit nur `JsonOutputPath` ließe sich "`--to-json` gar nicht angegeben" nicht mehr von "`--to-json` angegeben, aber ohne Pfad → Default verwenden" unterscheiden — beide hätten `null` ergeben. `JsonOutputRequested` trägt "wurde der Schalter überhaupt angegeben", `JsonOutputPath` weiterhin nur den optionalen expliziten Wert.
+
+**Drei-Zustands-Erkennung wie bei `--max-depth`, aber mit einer anderen Bedingung:** `--max-depth` unterscheidet "Wert angegeben" per `int.TryParse` (ein ungültiger/fehlender Wert fällt automatisch auf den Default-Zweig). Ein Zielpfad ist aber jede beliebige Zeichenkette — `TryParse` gibt es dafür nicht. Stattdessen: "Wert angegeben" gilt nur, wenn ein nächstes Token existiert **und** nicht mit `--` beginnt (dieselbe Heuristik, mit der auch sonst überall in `CliArgumentParser` ein `--`-Token nie versehentlich als Wert eines anderen Schalters verschluckt wird).
+
+**Warum der Default-Pfad nur einmal aufgelöst wird, nicht zweimal:** `Program.cs` berechnet `resolvedJsonPath` genau einmal, direkt nach dem Parsen (bei explizitem Pfad: der Pfad selbst; sonst `GenerateDefaultPath`), und verwendet denselben Wert sowohl für den frühen `EnsureCanCreate`-Check als auch für den späteren `JsonReportWriter.Write`-Aufruf. Würde man `GenerateDefaultPath` stattdessen zweimal aufrufen (einmal für den Check, einmal fürs Schreiben), könnte zwischen beiden Aufrufen theoretisch ein anderer Name herauskommen — unnötige, vermeidbare Inkonsistenz.
+
 ## Tests
 
-- `CliArgumentParserTests`: `--to-json <Pfad>` setzt `JsonOutputPath`; ohne Wert wirft; ohne den Schalter bleibt `JsonOutputPath` `null`.
-- `JsonOutputPathValidatorTests` (Temp-Verzeichnisse wie `TrxInputResolverTests`): schreibbarer, noch nicht belegter Pfad wirft nicht; **bereits existierende Datei wirft, Inhalt bleibt exakt erhalten** (der Kernfall dieses Features); nicht existierendes Zielverzeichnis wirft.
+- `CliArgumentParserTests`: `--to-json <Pfad>` setzt `JsonOutputRequested` und `JsonOutputPath`; `--to-json` ohne Wert setzt `JsonOutputRequested`, lässt `JsonOutputPath` aber `null`; `--to-json` direkt gefolgt von einer weiteren Option verschluckt diese nicht als Pfad (`--max-depth` danach wird trotzdem korrekt geparst); ohne den Schalter ist `JsonOutputRequested` `false` und `JsonOutputPath` `null`.
+- `JsonOutputPathValidatorTests` (Temp-Verzeichnisse wie `TrxInputResolverTests`): schreibbarer, noch nicht belegter Pfad wirft nicht; **bereits existierende Datei wirft, Inhalt bleibt exakt erhalten** (der Kernfall dieses Features); nicht existierendes Zielverzeichnis wirft; `GenerateDefaultPath` liefert `testguardian_report_1.json`, wenn nichts existiert, überspringt bereits belegte Nummern, und erzeugt selbst nie eine Datei.
 - `JsonReportWriterTests` (Core.Tests): geschriebene Datei per `JsonDocument.Parse` inhaltlich geprüft (Assemblies, `severity` als String, `unresolvedInputs`) statt exaktem String-Vergleich; zusätzlich ein Test, der `Write` gegen einen bereits existierenden Pfad aufruft und sowohl die geworfene `IOException` als auch den unveränderten Ursprungsinhalt prüft.
 - Wie immer: `dotnet build` (Clean-Rebuild aller vier Projekte) lief bei mir sauber durch, 0 Fehler/Warnungen; `dotnet test` bewusst nicht — das übernimmst du.

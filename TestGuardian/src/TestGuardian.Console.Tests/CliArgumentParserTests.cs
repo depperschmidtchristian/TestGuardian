@@ -77,24 +77,41 @@ public class CliArgumentParserTests
     }
 
     [TestMethod]
-    public void Parse_ToJsonWithValue_SetsJsonOutputPath()
+    public void Parse_ToJsonWithValue_SetsRequestedAndJsonOutputPath()
     {
         var options = CliArgumentParser.Parse(["a.trx", "--to-json", "report.json"]);
 
+        Assert.IsTrue(options.JsonOutputRequested);
         Assert.AreEqual("report.json", options.JsonOutputPath);
     }
 
     [TestMethod]
-    public void Parse_ToJsonWithoutValue_Throws()
+    public void Parse_ToJsonWithoutValue_SetsRequestedTrueAndPathNull()
     {
-        Assert.ThrowsException<ArgumentException>(() => CliArgumentParser.Parse(["a.trx", "--to-json"]));
+        // No explicit path — Program.cs is expected to generate a default testguardian_report_<n>.json
+        // name later, once the current directory's existing files can actually be checked.
+        var options = CliArgumentParser.Parse(["a.trx", "--to-json"]);
+
+        Assert.IsTrue(options.JsonOutputRequested);
+        Assert.IsNull(options.JsonOutputPath);
     }
 
     [TestMethod]
-    public void Parse_WithoutToJson_JsonOutputPathIsNull()
+    public void Parse_ToJsonImmediatelyFollowedByAnotherOption_DoesNotSwallowItAsThePath()
+    {
+        var options = CliArgumentParser.Parse(["a.trx", "--to-json", "--max-depth", "3"]);
+
+        Assert.IsTrue(options.JsonOutputRequested);
+        Assert.IsNull(options.JsonOutputPath);
+        Assert.AreEqual(3, options.MaxDepth, "--max-depth must still be parsed as its own option, not as --to-json's value.");
+    }
+
+    [TestMethod]
+    public void Parse_WithoutToJson_JsonOutputNotRequestedAndPathIsNull()
     {
         var options = CliArgumentParser.Parse(["a.trx"]);
 
+        Assert.IsFalse(options.JsonOutputRequested);
         Assert.IsNull(options.JsonOutputPath);
     }
 }

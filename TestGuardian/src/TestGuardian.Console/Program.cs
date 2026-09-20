@@ -8,15 +8,21 @@ using TestGuardian.Console;
 using TestGuardian.Console.Models;
 
 CliOptions options;
+string? resolvedJsonPath = null;
 try
 {
     options = CliArgumentParser.Parse(args);
 
-    if (options.JsonOutputPath is { } requestedJsonPath)
+    if (options.JsonOutputRequested)
     {
+        // An explicit path is used as-is; otherwise a default name is picked here, once — reused
+        // for both this early check and the actual write at the end, so the two can never disagree.
+        resolvedJsonPath = options.JsonOutputPath
+            ?? JsonOutputPathValidator.GenerateDefaultPath(Directory.GetCurrentDirectory());
+
         // Checked as early as possible, before any .trx file is even resolved — see
         // JsonOutputPathValidator's own doc comment for why it never opens the target itself.
-        JsonOutputPathValidator.EnsureCanCreate(requestedJsonPath);
+        JsonOutputPathValidator.EnsureCanCreate(resolvedJsonPath);
     }
 }
 catch (ArgumentException ex)
@@ -45,7 +51,7 @@ var verdict = TestRunVerdict.Evaluate(overview, inputResolution, options.MinTest
 
 ConsoleReportPrinter.Print(overview, inputResolution, verdict);
 
-if (options.JsonOutputPath is { } jsonPath)
+if (resolvedJsonPath is { } jsonPath)
 {
     try
     {
