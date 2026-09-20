@@ -1,3 +1,4 @@
+using TestGuardian.Core.Allowlist;
 using TestGuardian.Core.Input.Models;
 using TestGuardian.Core.Trx;
 using TestGuardian.Core.Trx.Models;
@@ -147,6 +148,47 @@ public class TestRunVerdictTests
         Assert.IsTrue(verdict.Reasons.Any(r => r.Kind == VerdictReasonKind.RealTestFailures));
         Assert.IsTrue(verdict.Reasons.Any(r => r.Kind == VerdictReasonKind.UnresolvedInputs),
             "The yellow reason is still reported alongside the red one, it just doesn't decide the banner color.");
+    }
+
+    [TestMethod]
+    public void Evaluate_AllFailuresOnAllowlist_IsSuccessfulAndReportsThemAsTolerated()
+    {
+        var overview = AggregateSamples("lauf-a.trx"); // 4 passed, 3 failed
+        var allowlist = KnownFailureAllowlist.Parse(
+            ["Pfad_UncPfad_WirdErkannt", "Puffer_Nullzeiger_WirdAbgefangen", "Wandler_LeereEingabe_LiefertLeer"]);
+
+        var verdict = TestRunVerdict.Evaluate(overview, NoUnresolvedInputs, minTests: null, allowlist);
+
+        Assert.IsTrue(verdict.IsSuccessful,
+            "All three failures are known and tolerated — nothing unexpected is left to make this Red.");
+        Assert.AreEqual(0, verdict.Reasons.Count);
+        Assert.AreEqual(3, verdict.ToleratedFailures.Count,
+            "Tolerated failures must stay visible even though they no longer affect the verdict.");
+    }
+
+    [TestMethod]
+    public void Evaluate_SomeFailuresOnAllowlistOthersNot_StaysRedForTheUnexpectedOnes()
+    {
+        var overview = AggregateSamples("lauf-a.trx"); // 4 passed, 3 failed
+        var allowlist = KnownFailureAllowlist.Parse(["Pfad_UncPfad_WirdErkannt"]); // only 1 of 3
+
+        var verdict = TestRunVerdict.Evaluate(overview, NoUnresolvedInputs, minTests: null, allowlist);
+
+        Assert.AreEqual(VerdictSeverity.Red, verdict.Severity);
+        Assert.AreEqual(1, verdict.ToleratedFailures.Count);
+        var realFailuresReason = verdict.Reasons.Single(r => r.Kind == VerdictReasonKind.RealTestFailures);
+        StringAssert.Contains(realFailuresReason.Message, "2 Test(s)",
+            "Only the 2 non-allowlisted failures should count towards the Red reason.");
+    }
+
+    [TestMethod]
+    public void Evaluate_WithoutAllowlist_ToleratedFailuresIsEmpty()
+    {
+        var overview = AggregateSamples("lauf-a.trx");
+
+        var verdict = TestRunVerdict.Evaluate(overview, NoUnresolvedInputs, minTests: null);
+
+        Assert.AreEqual(0, verdict.ToleratedFailures.Count);
     }
 
     [TestMethod]

@@ -23,8 +23,20 @@ public enum VerdictSeverity
     Red
 }
 
-public sealed record GuardianVerdict(VerdictSeverity Severity, IReadOnlyList<VerdictReason> Reasons)
+/// <summary>
+/// <see cref="ToleratedFailures"/> defaults to empty so existing two-argument call sites keep
+/// compiling — tests/callers that don't know about the known-failures allowlist (see
+/// docs/decisions/known-failures-allowlist.md) simply never populate it.
+/// </summary>
+public sealed record GuardianVerdict(
+    VerdictSeverity Severity,
+    IReadOnlyList<VerdictReason> Reasons,
+    IReadOnlyList<TestOutcomeEntry>? ToleratedFailures = null)
 {
+    // Redeclared (not just the positional parameter) so a null argument becomes an empty list —
+    // callers never need to check for null, only Count == 0.
+    public IReadOnlyList<TestOutcomeEntry> ToleratedFailures { get; init; } = ToleratedFailures ?? [];
+
     // Exit-Code-Entscheidung bleibt binär: alles außer Green scheitert (siehe docs/decisions/input-warning-level.md).
     public bool IsSuccessful => Severity == VerdictSeverity.Green;
 }

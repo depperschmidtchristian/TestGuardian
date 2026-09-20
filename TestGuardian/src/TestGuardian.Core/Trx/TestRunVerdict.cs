@@ -1,3 +1,4 @@
+using TestGuardian.Core.Allowlist;
 using TestGuardian.Core.Input.Models;
 using TestGuardian.Core.Trx.Models;
 
@@ -13,20 +14,51 @@ public static class TestRunVerdict
     public static GuardianVerdict Evaluate(
         TestRunOverview overview,
         InputResolutionResult inputResolution,
-        int? minTests)
+        int? minTests,
+        KnownFailureAllowlist? knownFailures = null)
     {
         var reasons = new List<VerdictReason>();
 
-        if (overview.Total.Failed > 0)
+        // Tolerated failures are excluded from the Failed/LoadError counts that feed the verdict
+        // (but not from CorrectlyExecuted — the test body did run and reach an unambiguous result)
+        // — they're reported separately (GuardianVerdict.ToleratedFailures) so they stay visible,
+        // never silently dropped. See docs/decisions/known-failures-allowlist.md.
+        var allowlist = knownFailures ?? KnownFailureAllowlist.Empty;
+        var toleratedFailures = new List<TestOutcomeEntry>();
+        var unexpectedFailed = 0;
+        var unexpectedLoadErrors = 0;
+
+        foreach (var testCase in overview.Total.TestCases)
         {
-            reasons.Add(new VerdictReason(VerdictReasonKind.RealTestFailures,
-                $"{overview.Total.Failed} Test(s) fehlgeschlagen."));
+            if (testCase.Outcome is not (TestOutcome.Failed or TestOutcome.LoadError))
+            {
+                continue;
+            }
+
+            if (allowlist.Contains(testCase.TestName))
+            {
+                toleratedFailures.Add(new TestOutcomeEntry(testCase.AssemblyName, testCase.TestName, testCase.Outcome));
+            }
+            else if (testCase.Outcome == TestOutcome.Failed)
+            {
+                unexpectedFailed++;
+            }
+            else
+            {
+                unexpectedLoadErrors++;
+            }
         }
 
-        if (overview.Total.LoadError > 0)
+        if (unexpectedFailed > 0)
+        {
+            reasons.Add(new VerdictReason(VerdictReasonKind.RealTestFailures,
+                $"{unexpectedFailed} Test(s) fehlgeschlagen."));
+        }
+
+        if (unexpectedLoadErrors > 0)
         {
             reasons.Add(new VerdictReason(VerdictReasonKind.LoadErrors,
-                $"{overview.Total.LoadError} Test(s) konnten nicht geladen werden (Bibliothek nicht ladbar)."));
+                $"{unexpectedLoadErrors} Test(s) konnten nicht geladen werden (Bibliothek nicht ladbar)."));
         }
 
         // Nur ein Rot-Grund, wenn überhaupt etwas gelesen wurde: 0 Tests bei mindestens einer
@@ -62,7 +94,7 @@ public static class TestRunVerdict
             ? VerdictSeverity.Green
             : reasons.Max(r => SeverityOf(r.Kind));
 
-        return new GuardianVerdict(severity, reasons);
+        return new GuardianVerdict(severity, reasons, toleratedFailures);
     }
 
     /// <summary>

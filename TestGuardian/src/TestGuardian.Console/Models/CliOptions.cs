@@ -13,4 +13,5 @@ public sealed record CliOptions(
     int? MinTests,
     bool JsonOutputRequested,
     string? JsonOutputPath,
-    string? BaselinePath);
+    string? BaselinePath,
+    string? KnownFailuresPath);

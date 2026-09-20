@@ -19,6 +19,7 @@ public static class CliArgumentParser
         var jsonOutputRequested = false;
         string? jsonOutputPath = null;
         string? baselinePath = null;
+        string? knownFailuresPath = null;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -54,6 +55,12 @@ public static class CliArgumentParser
                     break;
                 case "--baseline":
                     throw new ArgumentException("--baseline erwartet einen Pfad zu einer JSON-Datei als Wert.");
+                case "--known-failures" when i + 1 < args.Length && !args[i + 1].StartsWith("--", StringComparison.Ordinal):
+                    knownFailuresPath = args[i + 1];
+                    i++;
+                    break;
+                case "--known-failures":
+                    throw new ArgumentException("--known-failures erwartet einen Pfad zu einer Datei als Wert.");
                 case var unknownOption when unknownOption.StartsWith("--", StringComparison.Ordinal):
                     throw new ArgumentException(
                         $"Unbekannte Option '{unknownOption}'. Ein Tippfehler in einem Schalter darf nicht " +
@@ -73,6 +80,6 @@ public static class CliArgumentParser
                 "Keine Eingabe angegeben. Bitte mindestens eine .trx-Datei, einen Ordner oder ein Suchmuster angeben.");
         }
 
-        return new CliOptions(inputs, maxDepth, minTests, jsonOutputRequested, jsonOutputPath, baselinePath);
+        return new CliOptions(inputs, maxDepth, minTests, jsonOutputRequested, jsonOutputPath, baselinePath, knownFailuresPath);
     }
 }

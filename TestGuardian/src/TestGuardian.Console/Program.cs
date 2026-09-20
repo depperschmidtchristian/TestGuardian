@@ -1,4 +1,6 @@
 using TestGuardian.Core;
+using TestGuardian.Core.Allowlist;
+using TestGuardian.Core.Allowlist.Models;
 using TestGuardian.Core.Baseline;
 using TestGuardian.Core.Input;
 using TestGuardian.Core.Json;
@@ -11,6 +13,7 @@ using TestGuardian.Console.Models;
 CliOptions options;
 string? resolvedJsonPath = null;
 JsonReport? baseline = null;
+KnownFailureAllowlist? knownFailures = null;
 try
 {
     options = CliArgumentParser.Parse(args);
@@ -38,6 +41,17 @@ try
             var result => throw new ArgumentOutOfRangeException(nameof(result), result, "Unbekanntes BaselineLoadResult.")
         };
     }
+
+    if (options.KnownFailuresPath is { } knownFailuresPath)
+    {
+        // Same class of usage error as a missing/malformed baseline — routed the same way.
+        knownFailures = KnownFailureAllowlistLoader.Load(knownFailuresPath) switch
+        {
+            KnownFailureAllowlistLoadResult.Success success => success.Allowlist,
+            KnownFailureAllowlistLoadResult.Failure failure => throw new ArgumentException(failure.Reason),
+            var result => throw new ArgumentOutOfRangeException(nameof(result), result, "Unbekanntes KnownFailureAllowlistLoadResult.")
+        };
+    }
 }
 catch (ArgumentException ex)
 {
@@ -61,7 +75,7 @@ var readResults = TrxBatchReader.ReadAll(inputResolution.ResolvedFilePaths, prog
 Console.WriteLine();
 
 var overview = TestRunAggregator.Aggregate(readResults);
-var verdict = TestRunVerdict.Evaluate(overview, inputResolution, options.MinTests);
+var verdict = TestRunVerdict.Evaluate(overview, inputResolution, options.MinTests, knownFailures);
 
 // Purely informational — never changes the verdict/exit code itself, see docs/decisions/baseline-comparison.md.
 var baselineComparison = baseline is { } baselineReport ? BaselineComparer.Compare(overview, baselineReport) : null;

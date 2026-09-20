@@ -35,6 +35,8 @@ public static class ConsoleReportPrinter
         PrintSectionIfAny("Nicht aufgelöste Eingaben", inputResolution.UnresolvedInputs,
             u => $"[{u.RawInput}] {u.Reason}");
 
+        PrintSectionIfAny("Bekannte, geduldete Fehlschläge", verdict.ToleratedFailures, FormatTestOutcomeEntry);
+
         if (baselineComparison is { } comparison)
         {
             System.Console.WriteLine();

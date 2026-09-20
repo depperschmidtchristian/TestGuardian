@@ -138,4 +138,26 @@ public class CliArgumentParserTests
 
         Assert.IsNull(options.BaselinePath);
     }
+
+    [TestMethod]
+    public void Parse_KnownFailuresWithValue_SetsKnownFailuresPath()
+    {
+        var options = CliArgumentParser.Parse(["a.trx", "--known-failures", "allowlist.txt"]);
+
+        Assert.AreEqual("allowlist.txt", options.KnownFailuresPath);
+    }
+
+    [TestMethod]
+    public void Parse_KnownFailuresWithoutValue_Throws()
+    {
+        Assert.ThrowsException<ArgumentException>(() => CliArgumentParser.Parse(["a.trx", "--known-failures"]));
+    }
+
+    [TestMethod]
+    public void Parse_WithoutKnownFailures_KnownFailuresPathIsNull()
+    {
+        var options = CliArgumentParser.Parse(["a.trx"]);
+
+        Assert.IsNull(options.KnownFailuresPath);
+    }
 }

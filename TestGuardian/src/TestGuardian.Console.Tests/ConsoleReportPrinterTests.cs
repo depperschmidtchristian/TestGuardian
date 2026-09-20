@@ -95,6 +95,32 @@ public class ConsoleReportPrinterTests
     }
 
     [TestMethod]
+    public void Print_WithToleratedFailures_OutputListsThemInOwnSection()
+    {
+        var overview = new TestRunOverview([], [], []);
+        var verdict = new GuardianVerdict(VerdictSeverity.Green, [],
+            ToleratedFailures: [new TestOutcomeEntry("lib.dll", "Test_RequiresLicensedFeature", TestOutcome.Failed)]);
+
+        var output = CaptureOutput(() => ConsoleReportPrinter.Print(overview, new InputResolutionResult([], []), verdict));
+
+        StringAssert.Contains(output, "Bekannte, geduldete Fehlschläge");
+        StringAssert.Contains(output, "lib.dll/Test_RequiresLicensedFeature");
+        StringAssert.Contains(output, "ERFOLGREICH",
+            "A tolerated failure alone must not prevent a successful verdict.");
+    }
+
+    [TestMethod]
+    public void Print_WithoutToleratedFailures_OutputContainsNoToleratedSection()
+    {
+        var overview = new TestRunOverview([], [], []);
+        var verdict = new GuardianVerdict(VerdictSeverity.Green, []);
+
+        var output = CaptureOutput(() => ConsoleReportPrinter.Print(overview, new InputResolutionResult([], []), verdict));
+
+        Assert.IsFalse(output.Contains("Bekannte, geduldete Fehlschläge"));
+    }
+
+    [TestMethod]
     public void PrintUsageError_OutputContainsMessageAndWarnung()
     {
         var output = CaptureOutput(() => ConsoleReportPrinter.PrintUsageError("Unbekannte Option: --minTests"));
