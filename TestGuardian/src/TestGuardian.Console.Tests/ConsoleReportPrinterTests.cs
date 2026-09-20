@@ -129,6 +129,17 @@ public class ConsoleReportPrinterTests
         StringAssert.Contains(output, "Unbekannte Option: --minTests");
     }
 
+    [TestMethod]
+    public void PrintHelp_OutputListsEverySwitch()
+    {
+        var output = CaptureOutput(ConsoleReportPrinter.PrintHelp);
+
+        foreach (var expectedSwitch in new[] { "--max-depth", "--min-tests", "--to-json", "--baseline", "--known-failures", "--help" })
+        {
+            StringAssert.Contains(output, expectedSwitch);
+        }
+    }
+
     private static string CaptureOutput(Action action)
     {
         var originalOut = System.Console.Out;

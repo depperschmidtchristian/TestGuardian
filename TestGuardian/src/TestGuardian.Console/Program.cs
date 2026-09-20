@@ -10,6 +10,14 @@ using TestGuardian.Core.Trx.Models;
 using TestGuardian.Console;
 using TestGuardian.Console.Models;
 
+if (args.Any(a => a is "--help" or "-h"))
+{
+    // Checked before CliArgumentParser.Parse ever runs, so --help works regardless of whatever
+    // else is (or isn't) on the command line — never routed through the usage-error path.
+    ConsoleReportPrinter.PrintHelp();
+    return 0;
+}
+
 CliOptions options;
 string? resolvedJsonPath = null;
 JsonReport? baseline = null;

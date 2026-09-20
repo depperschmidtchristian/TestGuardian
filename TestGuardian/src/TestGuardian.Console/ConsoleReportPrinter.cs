@@ -82,6 +82,42 @@ public static class ConsoleReportPrinter
         PrintBanner("WARNUNG: FEHLERHAFTER AUFRUF", ConsoleColor.Yellow, [message]);
     }
 
+    /// <summary>
+    /// Checked in Program.cs before anything else is parsed — see docs/decisions/help-and-install-script.md
+    /// for why --help never runs through CliArgumentParser at all.
+    /// </summary>
+    public static void PrintHelp()
+    {
+        System.Console.WriteLine("""
+            TestGuardian - prueft .trx-Testergebnisse und entscheidet, ob ein "gruener" Lauf wirklich vertrauenswuerdig ist.
+
+            Verwendung:
+              TestGuardian <Datei|Ordner|Suchmuster>... [Optionen]
+
+            Eingabe (mindestens eine, mehrere sind erlaubt):
+              <Datei>       Pfad zu einer einzelnen .trx-Datei
+              <Ordner>      Ordner, der nach .trx-Dateien durchsucht wird (nicht rekursiv, sofern --max-depth nicht gesetzt ist)
+              <Suchmuster>  z.B. "C:\ergebnisse\lauf-*.trx" (bezieht sich auf eine einzelne Ordnerebene)
+
+            Optionen:
+              --max-depth [<n>]        Unterordner mit durchsuchen. Ohne Zahl: bis zu 10 Ebenen tief. Gilt nur fuer Ordner-Eingaben, nicht fuer Suchmuster.
+              --min-tests <n>          Lauf gilt als fehlerhaft, wenn weniger als <n> Tests ein eindeutiges Ergebnis lieferten.
+              --to-json [<Pfad>]       Schreibt den vollstaendigen Bericht als JSON. Ohne Pfad: testguardian_report_<n>.json im aktuellen Verzeichnis. Ueberschreibt nie eine bestehende Datei.
+              --baseline <Pfad>        Vergleicht die aktuell fehlgeschlagenen Tests gegen einen zuvor mit --to-json erzeugten Bericht (neu rot / bereits vorher rot / behoben).
+              --known-failures <Pfad>  Textdatei mit bekannten, geduldeten Fehlschlaegen (ein Testname pro Zeile, #-Kommentare erlaubt) - zaehlen nicht als Grund fuer ein rotes Urteil, bleiben aber sichtbar.
+              --help, -h                Diese Hilfe anzeigen und beenden.
+
+            Exit-Code:
+              0  Urteil ERFOLGREICH (gruen)
+              1  Urteil WARNUNG oder FEHLERHAFT (gelb/rot), oder ein fehlerhafter Aufruf
+
+            Beispiele:
+              TestGuardian lauf.trx
+              TestGuardian .\ergebnisse --max-depth --min-tests 10
+              TestGuardian .\ergebnisse --to-json bericht.json --known-failures bekannte-fehler.txt
+            """);
+    }
+
     private static void PrintVerdict(GuardianVerdict verdict)
     {
         var (color, label) = verdict.Severity switch
