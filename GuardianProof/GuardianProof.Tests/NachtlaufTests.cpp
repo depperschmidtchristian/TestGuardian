@@ -72,6 +72,8 @@ namespace NachtlaufDemoTests
 
         }
 
+
+        //Simulierter fehlerhafter Test
         //BEGIN_TEST_METHOD_ATTRIBUTE(Test_DivideModulo_with_Owner)
         //    TEST_METHOD_ATTRIBUTE(L"Owner", L"Nachtlauf")
         //    END_TEST_METHOD_ATTRIBUTE()
@@ -86,5 +88,17 @@ namespace NachtlaufDemoTests
         //    Assert::IsTrue(result == 0);
 
         //}
+
+
+        //Known-Failures Simulation
+        TEST_METHOD(Test_RequiresLicensedFeature)
+        {
+            Assert::Fail(L"Dieser Test braucht eine Lizenz/Hardware, die hier nicht verfuegbar ist.");
+        }
+
+        TEST_METHOD(Test_RequiresInstalledProgram)
+        {
+            Assert::Fail(L"Programm xyz ist nicht installiert.");
+        }
     };
 }
