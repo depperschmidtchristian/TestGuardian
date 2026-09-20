@@ -8,7 +8,7 @@ Ein Werkzeug, das hinter jedem Testlauf sitzt und entscheidet: darf dieses Ergeb
 - Scheitert (Exit-Code ≠ 0), wenn mindestens ein Test fehlgeschlagen ist, null Tests ausgeführt wurden, oder weniger Tests liefen als erwartet (`--min-tests`).
 - Unterscheidet echte Fehlschläge von **Ladefehlern** (Testbibliothek konnte nicht geladen werden) — beides in einen Topf zu werfen verfälscht das Bild.
 - Meldet kaputte Eingaben (fehlende Datei, leere/kaputte XML, falscher Pfad) niemals stillschweigend als "alles gut", sondern als sichtbare Warnung oder fehlerhafte Meldung.
-- **Zusätzlich (Kür):** maschinenlesbare JSON-Ausgabe, Vergleich gegen einen gespeicherten Bericht ("war dieser Test gestern schon fehlgeschlagen?"), und eine Liste bekannter, geduldeter Fehlschläge (z. B. Tests, die eine hier fehlende Installation brauchen).
+- **Zusätzlich:** maschinenlesbare JSON-Ausgabe, Vergleich gegen einen gespeicherten Bericht ("war dieser Test gestern schon fehlgeschlagen?"), und eine Liste bekannter, geduldeter Fehlschläge (z. B. Tests, die eine hier fehlende Installation brauchen).
 
 Alle Design-Entscheidungen samt Begründung stehen einzeln unter [`docs/decisions/`](docs/decisions), die zugehörigen Pläne unter [`docs/plans/`](docs/plans).
 
@@ -16,14 +16,12 @@ Alle Design-Entscheidungen samt Begründung stehen einzeln unter [`docs/decision
 
 Voraussetzung: [.NET 8 SDK](https://dotnet.microsoft.com/download).
 
-Als globales Tool paketieren (Release, nicht Debug) und installieren:
+Als globales Tool paketieren und installieren:
 
 ```powershell
 dotnet pack TestGuardian\src\TestGuardian.Console\TestGuardian.Console.csproj -c Release -o nupkg
 dotnet tool install --global --add-source nupkg TestGuardian
 ```
-
-War TestGuardian schon einmal installiert (z. B. nach Codeänderungen neu installieren), zuerst `dotnet tool uninstall --global TestGuardian` ausführen, dann `dotnet tool install` wie oben erneut.
 
 Danach steht `TestGuardian` als Befehl in jedem Terminal zur Verfügung:
 
@@ -61,7 +59,7 @@ TestGuardian "Fixtures\Sample Data" --to-json bericht-heute.json     # JSON-Beri
 TestGuardian "Fixtures\Sample Data" --baseline bericht-gestern.json  # gegen einen alten Bericht vergleichen
 ```
 
-## Teil B: der native Beweis (`GuardianProof`)
+## Der native Beweis (`GuardianProof`)
 
 `GuardianProof/` ist ein natives C++-Testprojekt (Microsoft Unit Testing Framework for C++). Zwei Demoläufe zeigen den eigentlichen Zweck von TestGuardian:
 
