@@ -12,4 +12,5 @@ public sealed record CliOptions(
     int MaxDepth,
     int? MinTests,
     bool JsonOutputRequested,
-    string? JsonOutputPath);
+    string? JsonOutputPath,
+    string? BaselinePath);

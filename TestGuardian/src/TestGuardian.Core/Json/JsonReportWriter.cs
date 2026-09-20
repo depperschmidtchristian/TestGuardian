@@ -12,7 +12,11 @@ namespace TestGuardian.Core.Json;
 /// </summary>
 public static class JsonReportWriter
 {
-    private static readonly JsonSerializerOptions Options = new()
+    /// <summary>
+    /// Internal, not private: <see cref="BaselineReportLoader"/> reuses these exact same options
+    /// when reading a report back, so serializing and deserializing always agree.
+    /// </summary>
+    internal static readonly JsonSerializerOptions Options = new()
     {
         WriteIndented = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,

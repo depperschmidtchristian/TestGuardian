@@ -1,3 +1,4 @@
+using TestGuardian.Core.Baseline.Models;
 using TestGuardian.Core.Input.Models;
 using TestGuardian.Core.Trx.Models;
 
@@ -14,7 +15,8 @@ public static class ConsoleReportPrinter
     public static void Print(
         TestRunOverview overview,
         InputResolutionResult inputResolution,
-        GuardianVerdict verdict)
+        GuardianVerdict verdict,
+        BaselineComparison? baselineComparison = null)
     {
         System.Console.WriteLine();
         System.Console.WriteLine("Ergebnis je Bibliothek:");
@@ -33,9 +35,21 @@ public static class ConsoleReportPrinter
         PrintSectionIfAny("Nicht aufgelöste Eingaben", inputResolution.UnresolvedInputs,
             u => $"[{u.RawInput}] {u.Reason}");
 
+        if (baselineComparison is { } comparison)
+        {
+            System.Console.WriteLine();
+            System.Console.WriteLine($"Baseline-Vergleich (Bericht vom {comparison.BaselineGeneratedAt:yyyy-MM-dd HH:mm}):");
+            PrintSectionIfAny("Neu rot", comparison.NewlyFailed, FormatTestOutcomeEntry);
+            PrintSectionIfAny("Bereits vorher rot", comparison.AlreadyFailingInBaseline, FormatTestOutcomeEntry);
+            PrintSectionIfAny("Seither behoben", comparison.FixedSinceBaseline, FormatTestOutcomeEntry);
+        }
+
         System.Console.WriteLine();
         PrintVerdict(verdict);
     }
+
+    private static string FormatTestOutcomeEntry(TestOutcomeEntry entry) =>
+        $"{entry.AssemblyName}/{entry.TestName}";
 
     private static string FormatAssemblyLine(AssemblySummary summary) =>
         $"  {summary.AssemblyName,-40} {summary.Total,4} gesamt  {summary.Passed,4} bestanden  " +

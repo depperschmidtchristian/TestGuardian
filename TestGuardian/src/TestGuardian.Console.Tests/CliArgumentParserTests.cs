@@ -114,4 +114,28 @@ public class CliArgumentParserTests
         Assert.IsFalse(options.JsonOutputRequested);
         Assert.IsNull(options.JsonOutputPath);
     }
+
+    [TestMethod]
+    public void Parse_BaselineWithValue_SetsBaselinePath()
+    {
+        var options = CliArgumentParser.Parse(["a.trx", "--baseline", "old.json"]);
+
+        Assert.AreEqual("old.json", options.BaselinePath);
+    }
+
+    [TestMethod]
+    public void Parse_BaselineWithoutValue_Throws()
+    {
+        // Unlike --to-json, there is no sensible default baseline file to guess — a missing value
+        // here is unambiguously a usage error.
+        Assert.ThrowsException<ArgumentException>(() => CliArgumentParser.Parse(["a.trx", "--baseline"]));
+    }
+
+    [TestMethod]
+    public void Parse_WithoutBaseline_BaselinePathIsNull()
+    {
+        var options = CliArgumentParser.Parse(["a.trx"]);
+
+        Assert.IsNull(options.BaselinePath);
+    }
 }

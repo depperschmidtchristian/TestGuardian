@@ -1,4 +1,5 @@
 using TestGuardian.Core;
+using TestGuardian.Core.Baseline;
 using TestGuardian.Core.Input;
 using TestGuardian.Core.Json;
 using TestGuardian.Core.Json.Models;
@@ -9,6 +10,7 @@ using TestGuardian.Console.Models;
 
 CliOptions options;
 string? resolvedJsonPath = null;
+JsonReport? baseline = null;
 try
 {
     options = CliArgumentParser.Parse(args);
@@ -23,6 +25,18 @@ try
         // Checked as early as possible, before any .trx file is even resolved — see
         // JsonOutputPathValidator's own doc comment for why it never opens the target itself.
         JsonOutputPathValidator.EnsureCanCreate(resolvedJsonPath);
+    }
+
+    if (options.BaselinePath is { } baselinePath)
+    {
+        // A missing/malformed baseline file is the same class of usage error as any other bad
+        // CLI input — routed through the same ArgumentException path below.
+        baseline = BaselineReportLoader.Load(baselinePath) switch
+        {
+            BaselineLoadResult.Success success => success.Report,
+            BaselineLoadResult.Failure failure => throw new ArgumentException(failure.Reason),
+            var result => throw new ArgumentOutOfRangeException(nameof(result), result, "Unbekanntes BaselineLoadResult.")
+        };
     }
 }
 catch (ArgumentException ex)
@@ -49,13 +63,16 @@ Console.WriteLine();
 var overview = TestRunAggregator.Aggregate(readResults);
 var verdict = TestRunVerdict.Evaluate(overview, inputResolution, options.MinTests);
 
-ConsoleReportPrinter.Print(overview, inputResolution, verdict);
+// Purely informational — never changes the verdict/exit code itself, see docs/decisions/baseline-comparison.md.
+var baselineComparison = baseline is { } baselineReport ? BaselineComparer.Compare(overview, baselineReport) : null;
+
+ConsoleReportPrinter.Print(overview, inputResolution, verdict, baselineComparison);
 
 if (resolvedJsonPath is { } jsonPath)
 {
     try
     {
-        JsonReportWriter.Write(jsonPath, new JsonReport(overview, inputResolution, verdict));
+        JsonReportWriter.Write(jsonPath, new JsonReport(overview, inputResolution, verdict, DateTimeOffset.Now, baselineComparison));
         Console.WriteLine($"JSON-Bericht geschrieben nach: {jsonPath}");
     }
     catch (IOException ex)

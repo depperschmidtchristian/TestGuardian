@@ -1,3 +1,4 @@
+using TestGuardian.Core.Baseline.Models;
 using TestGuardian.Core.Input.Models;
 using TestGuardian.Core.Trx.Models;
 using TestGuardian.Console;
@@ -62,6 +63,35 @@ public class ConsoleReportPrinterTests
         StringAssert.Contains(output, reasons[0].Message);
         Assert.IsFalse(output.Contains("URTEIL: FEHLERHAFT"));
         Assert.IsFalse(output.Contains("URTEIL: ERFOLGREICH"));
+    }
+
+    [TestMethod]
+    public void Print_WithBaselineComparison_OutputContainsAllThreeCategories()
+    {
+        var overview = new TestRunOverview([], [], []);
+        var verdict = new GuardianVerdict(VerdictSeverity.Red, [new VerdictReason(VerdictReasonKind.RealTestFailures, "1 Test(s) fehlgeschlagen.")]);
+        var comparison = new BaselineComparison(
+            new DateTimeOffset(2026, 9, 20, 8, 0, 0, TimeSpan.Zero),
+            NewlyFailed: [new TestOutcomeEntry("lib.dll", "NewlyBrokenTest", TestOutcome.Failed)],
+            AlreadyFailingInBaseline: [new TestOutcomeEntry("lib.dll", "KnownFlakyTest", TestOutcome.Failed)],
+            FixedSinceBaseline: [new TestOutcomeEntry("lib.dll", "FixedTest", TestOutcome.Passed)]);
+
+        var output = CaptureOutput(() => ConsoleReportPrinter.Print(overview, new InputResolutionResult([], []), verdict, comparison));
+
+        StringAssert.Contains(output, "lib.dll/NewlyBrokenTest");
+        StringAssert.Contains(output, "lib.dll/KnownFlakyTest");
+        StringAssert.Contains(output, "lib.dll/FixedTest");
+    }
+
+    [TestMethod]
+    public void Print_WithoutBaselineComparison_OutputContainsNoBaselineSection()
+    {
+        var overview = new TestRunOverview([], [], []);
+        var verdict = new GuardianVerdict(VerdictSeverity.Green, []);
+
+        var output = CaptureOutput(() => ConsoleReportPrinter.Print(overview, new InputResolutionResult([], []), verdict));
+
+        Assert.IsFalse(output.Contains("Baseline-Vergleich"));
     }
 
     [TestMethod]

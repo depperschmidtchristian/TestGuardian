@@ -37,7 +37,9 @@ public class JsonReportWriterTests
             [new UnresolvedInput("missing.trx", "Datei nicht gefunden.")]);
         var verdict = new GuardianVerdict(VerdictSeverity.Yellow, [new VerdictReason(VerdictReasonKind.UnresolvedInputs, "1 Eingabe(n) konnten nicht aufgelöst werden.")]);
 
-        JsonReportWriter.Write(path, new JsonReport(overview, inputResolution, verdict));
+        var generatedAt = new DateTimeOffset(2026, 9, 21, 10, 0, 0, TimeSpan.Zero);
+
+        JsonReportWriter.Write(path, new JsonReport(overview, inputResolution, verdict, generatedAt));
 
         using var document = JsonDocument.Parse(File.ReadAllText(path));
         var root = document.RootElement;
@@ -48,6 +50,9 @@ public class JsonReportWriterTests
             "Enums must serialize as their name, not as a number — a numeric value would be fragile for downstream consumers.");
         Assert.AreEqual("missing.trx",
             root.GetProperty("inputResolution").GetProperty("unresolvedInputs")[0].GetProperty("rawInput").GetString());
+        Assert.AreEqual(generatedAt, root.GetProperty("generatedAt").GetDateTimeOffset());
+        Assert.IsFalse(root.TryGetProperty("baselineComparison", out var baselineElement) && baselineElement.ValueKind != JsonValueKind.Null,
+            "No --baseline given — the field must be absent or null, not an empty object.");
     }
 
     [TestMethod]
@@ -56,7 +61,7 @@ public class JsonReportWriterTests
         var path = Path.Combine(_tempRoot, "report.json");
         const string originalContent = "already here — must survive untouched";
         File.WriteAllText(path, originalContent);
-        var report = new JsonReport(new TestRunOverview([], [], []), new InputResolutionResult([], []), new GuardianVerdict(VerdictSeverity.Green, []));
+        var report = new JsonReport(new TestRunOverview([], [], []), new InputResolutionResult([], []), new GuardianVerdict(VerdictSeverity.Green, []), DateTimeOffset.Now);
 
         Assert.ThrowsException<IOException>(() => JsonReportWriter.Write(path, report));
         Assert.AreEqual(originalContent, File.ReadAllText(path),
