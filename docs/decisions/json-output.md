@@ -20,9 +20,11 @@ Nach Rückfrage bestätigt: "Overview" meinte den gesamten Output. `JsonReport` 
 
 `System.Text.Json` serialisiert (schreibt) Records rein property-basiert — das für Records bei *Deserialisierung* nötige Konstruktor-Matching betrifft nur das Einlesen, das hier nie passiert (`--to-json` ist eine reine Ausgabe, nichts wird je wieder eingelesen). Die Domain-Records (`TestRunOverview`, `GuardianVerdict`, `InputResolutionResult`, …) werden deshalb direkt serialisiert. Nebeneffekt: berechnete Properties wie `AssemblySummary.Total`/`.CorrectlyExecuted` oder `GuardianVerdict.IsSuccessful` erscheinen automatisch mit im JSON, ohne dass sie irgendwo verdoppelt werden müssten.
 
-## Enums als Strings
+## Enums als Strings, Property-Namen als camelCase
 
 `JsonSerializerOptions` mit `JsonStringEnumConverter`: `"severity": "Red"` statt `"severity": 2`. Robuster für Weiterverarbeitung (ein CI-Skript, das `severity == "Red"` prüft, bricht nicht, falls die Enum-Reihenfolge sich mal ändert).
+
+**Nachbesserung (2026-09-21):** `PropertyNamingPolicy = JsonNamingPolicy.CamelCase` fehlte ursprünglich in `JsonReportWriter` — dadurch landeten die C#-Property-Namen 1:1 (PascalCase, z.B. `"AssemblyName"`) im JSON, was `JsonReportWriterTests.Write_TypicalReport_...` (der von Anfang an camelCase erwartet hatte, wie in jeder üblichen JSON-Schnittstelle) beim ersten echten Testlauf durch den Nutzer auffliegen ließ. Ergänzt; Enum-*Werte* bleiben bewusst PascalCase (`"Yellow"`, nicht `"yellow"`) — `JsonStringEnumConverter()` ohne eigene Naming-Policy übernimmt einfach den C#-Namen, das war schon immer so gewollt und ist vom Test auch so geprüft.
 
 ## Warum die Schreibbarkeits-Prüfung in `TestGuardian.Console`, nicht in `TestGuardian.Core`
 
